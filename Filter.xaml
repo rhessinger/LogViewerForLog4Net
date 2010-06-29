@@ -1,0 +1,70 @@
+﻿<Window x:Name="window" x:Class="LogViewer.Filter"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Filter" Height="400" Width="300"
+    Background="{DynamicResource WindowBackgroundBrush}" WindowStartupLocation="CenterOwner">
+	<Window.Resources>
+		<Storyboard x:Key="OnLoaded1">
+			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="{x:Null}">
+				<EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
+			</DoubleAnimationUsingKeyFrames>
+		</Storyboard>
+	</Window.Resources>
+	<Window.Triggers>
+		<EventTrigger RoutedEvent="FrameworkElement.Loaded">
+			<BeginStoryboard Storyboard="{StaticResource OnLoaded1}"/>
+		</EventTrigger>
+	</Window.Triggers>
+     <DockPanel Margin="4,4,8,4">
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center">
+            <Button Height="23" Name="buttonClear" Width="76" Click="buttonClear_Click" Margin="3">Clear</Button>
+            <Button Height="23" Name="buttonCancel" Width="75" Click="buttonCancel_Click" Margin="3" IsCancel="True">Cancel</Button>
+            <Button Height="23" Name="buttonOK" Width="75" Click="buttonOK_Click" Margin="3" IsDefault="True">OK</Button>
+        </StackPanel>
+        <Grid Name="MainGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="90" />
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Grid.Row="0" Height="28" Foreground="White" Content="UserName"></Label>
+            <ComboBox Grid.Column="1" Grid.Row="0" Height="23" Name="comboBoxUserName" SelectedItem="{Binding UserName}" IsEditable="True" />
+            <Label Grid.Column="0" Grid.Row="1" Height="28" Foreground="White" Content="Level"></Label>
+            <ComboBox Grid.Column="1" Grid.Row="1" Height="23" Name="comboBoxLevel" SelectedItem="{Binding Level}" IsEditable="True" />
+            <Label Grid.Column="0" Grid.Row="2" Foreground="White" Content="Message"></Label>
+            <TextBox Grid.Column="1" Grid.Row="2" Height="23" Text="{Binding Message}" />
+            <Label Grid.Column="0" Grid.Row="3" Height="28" Foreground="White" Content="Thread"></Label>
+            <ComboBox Grid.Column="1" Grid.Row="3" Height="23" Name="comboBoxThread" SelectedItem="{Binding Thread}" IsEditable="True" />
+            <Label Grid.Column="0" Grid.Row="4" Height="28" Foreground="White" Content="Machine Name"></Label>
+            <ComboBox Grid.Column="1" Grid.Row="4" Height="23" Name="comboBoxMachineName" SelectedItem="{Binding MachineName}" IsEditable="True" />
+            <Label Grid.Column="0" Grid.Row="5" Height="28" Foreground="White" Content="Host Name"></Label>
+            <ComboBox Grid.Column="1" Grid.Row="5" Height="23" Name="comboBoxHostName" SelectedItem="{Binding HostName}" IsEditable="True" />
+            <Label Grid.Column="0" Grid.Row="6" Height="28" Foreground="White" Content="Application"></Label>
+            <ComboBox Grid.Column="1" Grid.Row="6" Height="23" Name="comboBoxApplication" SelectedItem="{Binding App}" IsEditable="True" />
+            <Label Grid.Column="0" Grid.Row="7" Height="28" Foreground="White" Content="Throwable"></Label>
+            <TextBox Grid.Column="1" Grid.Row="7" Height="23" Text="{Binding Throwable}" />
+            <Label Grid.Column="0" Grid.Row="8" Height="28" Foreground="White" Content="Class"></Label>
+            <ComboBox Grid.Column="1" Grid.Row="8" Height="23" Name="comboBoxClass" SelectedItem="{Binding Class}" IsEditable="True" />
+            <Label Grid.Column="0" Grid.Row="9" Height="28" Foreground="White" Content="Method"></Label>
+            <ComboBox Grid.Column="1" Grid.Row="9" Height="23" Name="comboBoxMethod" SelectedItem="{Binding Method}" IsEditable="True" />
+            <Label Grid.Column="0" Grid.Row="10" Height="28" Foreground="White" Content="File"></Label>
+            <ComboBox Grid.Column="1" Grid.Row="10" Height="23" Name="comboBoxFile" SelectedItem="{Binding File}" IsEditable="True" />
+            <Label Grid.Column="0" Grid.Row="11" Height="28" Foreground="White" Content="Log File"></Label>
+            <ComboBox Grid.Column="1" Grid.Row="11" Height="23" Name="comboLogFile" SelectedItem="{Binding LogName}" IsEditable="True" />
+            
+        </Grid>
+    </DockPanel>
+</Window>

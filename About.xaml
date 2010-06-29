@@ -1,0 +1,122 @@
+﻿<Window
+    xmlns="http://schemas.microsoft.com/netfx/2007/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ee="http://schemas.microsoft.com/expression/2010/effects" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" 
+    x:Class="LogViewer.About"
+    Title="About" Height="706" Width="400"
+	 Background="{DynamicResource WindowBackgroundBrush}"
+    Loaded="Window_Loaded" >
+	<Window.Resources>
+		<Storyboard x:Key="TitleAnim">
+			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Effect).(ee:RippleEffect.Frequency)" Storyboard.TargetName="stackPanel">
+				<EasingDoubleKeyFrame KeyTime="0:0:1.5" Value="0">
+					<EasingDoubleKeyFrame.EasingFunction>
+						<QuarticEase EasingMode="EaseOut"/>
+					</EasingDoubleKeyFrame.EasingFunction>
+				</EasingDoubleKeyFrame>
+			</DoubleAnimationUsingKeyFrames>
+			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Effect).(ee:RippleEffect.Magnitude)" Storyboard.TargetName="stackPanel">
+				<EasingDoubleKeyFrame KeyTime="0:0:1.5" Value="0">
+					<EasingDoubleKeyFrame.EasingFunction>
+						<QuarticEase EasingMode="EaseOut"/>
+					</EasingDoubleKeyFrame.EasingFunction>
+				</EasingDoubleKeyFrame>
+			</DoubleAnimationUsingKeyFrames>
+			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="RichTextBox1">
+				<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+				<EasingDoubleKeyFrame KeyTime="0:0:4" Value="1"/>
+			</DoubleAnimationUsingKeyFrames>
+			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="label">
+				<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+				<EasingDoubleKeyFrame KeyTime="0:0:4" Value="1"/>
+			</DoubleAnimationUsingKeyFrames>
+			<BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="(TextBoxBase.IsReadOnlyCaretVisible)" Storyboard.TargetName="RichTextBox1">
+				<DiscreteBooleanKeyFrame KeyTime="0" Value="False"/>
+				<DiscreteBooleanKeyFrame KeyTime="0:0:4" Value="False"/>
+			</BooleanAnimationUsingKeyFrames>
+		</Storyboard>
+	</Window.Resources>
+	<Window.Triggers>
+		<EventTrigger RoutedEvent="FrameworkElement.Loaded">
+			<BeginStoryboard Storyboard="{StaticResource TitleAnim}"/>
+		</EventTrigger>
+	</Window.Triggers>
+     <Border BorderBrush="#FF6A6A6A" BorderThickness="8" CornerRadius="8">
+    	<Border.Background>
+    		<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+    			<GradientStop Color="Black"/>
+    			<GradientStop Color="#FF232323" Offset="1"/>
+    		</LinearGradientBrush>
+    	</Border.Background>
+        <Grid Margin="10,10,10,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="93" />
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="0.837*" />
+                <RowDefinition Height="0.163*" />
+                <RowDefinition Height="29.5"/>
+            </Grid.RowDefinitions>
+            <StackPanel x:Name="stackPanel" Orientation="Vertical" VerticalAlignment="Stretch">
+            	<StackPanel.Effect>
+            		<ee:RippleEffect Magnitude="1" Frequency="100"/>
+            	</StackPanel.Effect>
+                <StackPanel Orientation="Horizontal">
+                    <Label x:Name="labelAssemblyName"
+                           Foreground="Orange"
+                           FontWeight="Normal"
+                           FontSize="24"
+                           FontFamily="Calibri"
+                           Content="LogViewer" Margin="0,0,5,0"/>
+                    <Label x:Name="labelAssemblyVersion"
+                           Foreground="Orange"
+                           FontWeight="Normal"
+                           FontSize="24"
+                           FontFamily="Calibri"
+                           Content="2.6"/>
+                </StackPanel>
+                <Label x:Name="labelAssembly" Foreground="AntiqueWhite"/>
+            </StackPanel>
+            <Label x:Name="label" Grid.Row="1" Foreground="Orange" Height="23" Content="Highlights:" />
+            <RichTextBox 
+                Grid.Row="2" 
+                x:Name="RichTextBox1" 
+                Padding="10,10,10,10" 
+                BorderThickness="4" AcceptsTab="True"
+                VerticalScrollBarVisibility="Disabled"
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalAlignment="Stretch" IsReadOnly="True" IsReadOnlyCaretVisible="True" AllowDrop="False" AutoWordSelection="False" ClipToBounds="True">
+                <FlowDocument PageWidth="600" LineHeight="1" IsOptimalParagraphEnabled="True" >
+                    <List>
+                        <ListItem>
+                            <Paragraph><Run Text="Drag and Drop to open XML log files (multi selection)"/></Paragraph>
+                        </ListItem>
+                        <ListItem>
+                            <Paragraph><Run Text="Use ALT-Drop to merge files"/></Paragraph>
+                        </ListItem>
+                         <ListItem>
+                            <Paragraph><Run Text="Dbl-Click 'Log File' to display long/short file names"/></Paragraph>
+                        </ListItem>
+                        <ListItem>
+                            <Paragraph><Run Text="Recent File List in xml file (exe folder)"/></Paragraph>
+                        </ListItem>
+                        <ListItem>
+                            <Paragraph><Run Text="Column Sorting (click headers)"/></Paragraph>
+                        </ListItem>
+                        <ListItem>
+                            <Paragraph><Run Text="Quick Filter (click message level icon)"/></Paragraph>
+                        </ListItem>
+                       
+                    </List>
+                    
+                    <Paragraph><LineBreak/><Run Text="Log4Net Config file must be setup as follows:"/><LineBreak/><Italic FontSize="10"/></Paragraph>
+                </FlowDocument>
+            </RichTextBox>
+            <Button Grid.Row="4" Height="23" x:Name="buttonOK" Width="75" Click="buttonOK_Click" VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="OK"/>
+            <TextBlock Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,14.616,0,0"><Hyperlink Foreground="Orange"  TargetName="_blank" NavigateUri="http://www.codeproject.com/KB/cs/logviewer.aspx" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="Original code by Ken C. Len"/></Hyperlink></TextBlock>
+            <TextBlock Grid.Row="3" HorizontalAlignment="Center" Margin="0,32.616,0,29.531" d:LayoutOverrides="Height"><Hyperlink Foreground="Orange" TargetName="_blank" NavigateUri="http://www.e-naxos.com/blog" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="Enhanced version by Olivier Dahan. Microsoft MVP"/></Hyperlink></TextBlock>
+            <TextBlock Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="16" FontWeight="Bold"><Hyperlink Foreground="DarkGray" TargetName="_blank" NavigateUri="http://yourlog4netviewer.codeplex.com/" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="LogViewer Project on CodePlex"/></Hyperlink></TextBlock>
+
+        </Grid>
+    </Border>
+</Window>
