@@ -95,7 +95,7 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="WPF.Themes">
-      <HintPath>..\..\..\Code annexe\WPF Themes\WPF.Themes\bin\Debug\WPF.Themes.dll</HintPath>
+      <HintPath>..\..\..\..\Clients\EuroTvs\SYO\Code annexe\WPF Themes\WPF.Themes\bin\Debug\WPF.Themes.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -137,6 +137,7 @@
     </Compile>
     <Compile Include="LogFilter.cs" />
     <Compile Include="ObjectCopier.cs" />
+    <Compile Include="SortAdorner.cs" />
     <Compile Include="Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
       <SubType>Code</SubType>

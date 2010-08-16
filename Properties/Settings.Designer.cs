@@ -22,5 +22,41 @@ namespace LogViewer.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("800")]
+        public double AppWidth {
+            get {
+                return ((double)(this["AppWidth"]));
+            }
+            set {
+                this["AppWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("800")]
+        public double AppHeight {
+            get {
+                return ((double)(this["AppHeight"]));
+            }
+            set {
+                this["AppHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("400")]
+        public double Split {
+            get {
+                return ((double)(this["Split"]));
+            }
+            set {
+                this["Split"] = value;
+            }
+        }
     }
 }

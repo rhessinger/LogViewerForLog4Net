@@ -4,10 +4,11 @@
 /*
  * Project     :  LogViewer
  * Description :  Viewer for Log4Net XML logs (see About box for log4Net configuration).
- * Version     :  2.6 
+ * Version     :  2.7 
  * Modified on :  1.0 15-3-2010 
  *                2.1 May 2010 OD
- *                2.6 26-jun-2010 OD - add quick filter on symbols, cancel filter on filter zoom/text symbol   
+ *                2.6 26-jun-2010 OD - add quick filter on symbols, cancel filter on filter zoom/text symbol  
+ *                2.7 --Jul-2010 OD - save window size, split position. Reset split.
  *                
  *
  * Copyrights  : (c) 2010 Olivier Dahan for the enhanced version - www.e-naxos.com
@@ -54,6 +55,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.IO;
 using System.Xml;
@@ -111,6 +113,10 @@ namespace LogViewer
         {
             InitializeComponent();
             Loaded += Window1_Loaded;
+            Width = Properties.Settings.Default.AppWidth;
+            Height = Properties.Settings.Default.AppHeight;
+            MainGrid.RowDefinitions[0].Height = new GridLength(Properties.Settings.Default.Split);
+
         }
 
         void Window1_Loaded(object sender, RoutedEventArgs e)
@@ -118,7 +124,7 @@ namespace LogViewer
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("fr-FR");
             MaxWidth = SystemParameters.PrimaryScreenWidth;
             listView1.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(ListView1_HeaderClicked));
-            RecentFileList.UseRegistryPersister("YourLog4NetViewer");
+            RecentFileList.UseXmlPersister(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "YourLog4NetViewer"));
             //RecentFileList.UseXmlPersister(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "EnaxosLogViewer.filehistory.xml"));
             RecentFileList.MenuClick += (s, ee) => OpenFile(ee.Filepath);
 
@@ -129,6 +135,11 @@ namespace LogViewer
 
             Title = string.Format(Properties.Resources.WindowTitle, Assembly.GetExecutingAssembly().GetName().Version);
             this.ApplyTheme("ExpressionDark");
+            foreach (var gvc in GridView1.Columns)
+            {
+                gvc.Width = gvc.ActualWidth;
+                gvc.Width = Double.NaN;
+            }
         }
 
         /// <summary>
@@ -197,7 +208,7 @@ namespace LogViewer
             {
                 var oFileStream = new FileStream(logFileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite);
                 var oStreamReader = new StreamReader(oFileStream);
-                string sBuffer = string.Format("<root>{0}</root>", oStreamReader.ReadToEnd());
+                var sBuffer = string.Format("<root>{0}</root>", oStreamReader.ReadToEnd());
                 oStreamReader.Close();
                 oFileStream.Close();
 
@@ -419,7 +430,7 @@ namespace LogViewer
 
             listView1.ItemsSource = null;
             listView1.ItemsSource = (from e in entries orderby e.TimeStamp select e).ToList();
-
+            clearSortAdorner();
 
             if (!withMerge)
             {
@@ -465,6 +476,9 @@ namespace LogViewer
         }
 
         private ListSortDirection direction = ListSortDirection.Descending;
+        private GridViewColumnHeader curSortCol = null;
+        private SortAdorner curAdorner = null;
+
 
         /// <summary>
         /// Handles the HeaderClicked event of the ListView1 control.
@@ -477,15 +491,29 @@ namespace LogViewer
             var source = e.Source as ListView;
             if (source == null) return;
             var dataView = CollectionViewSource.GetDefaultView(source.ItemsSource);
+            if (dataView == null) return;
             dataView.SortDescriptions.Clear();
             direction = direction == ListSortDirection.Ascending ? ListSortDirection.Descending : ListSortDirection.Ascending;
-            if (header != null)
+            if (header != null && header.Content!=null)
             {
                 var description = new SortDescription(header.Content.ToString(), direction);
                 dataView.SortDescriptions.Add(description);
             }
             dataView.Refresh();
+            clearSortAdorner();
+            curSortCol = header;
+            curAdorner = new SortAdorner(curSortCol, direction);
+            if (curSortCol != null) AdornerLayer.GetAdornerLayer(curSortCol).Add(curAdorner);
         }
+
+        private void clearSortAdorner()
+        {
+            if (curSortCol != null)
+            {
+                AdornerLayer.GetAdornerLayer(curSortCol).Remove(curAdorner);
+            }
+        }
+
         ////////////////////////////////////////////////////////////////////////////////
         #endregion
 
@@ -858,6 +886,20 @@ namespace LogViewer
         }
         #endregion
 
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.AppWidth = Width;
+            Properties.Settings.Default.AppHeight = Height;
+            Properties.Settings.Default.Split = MainGrid.RowDefinitions[0].Height.Value;
+            Properties.Settings.Default.Save();
+        }
 
-    }
+        private void ResetSeparator_Click(object sender, RoutedEventArgs e)
+        {
+            MainGrid.RowDefinitions[0].Height = new GridLength(ActualHeight / 3);
+        }
+
+      
+      
+     }
 }
