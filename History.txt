@@ -1,0 +1,19 @@
+YourLog4NetViewer - History
+---------------------------
+
+ V 2.7 --Jul-2010 OD 
+
+	* save window size, 
+	* save split position. 
+	* Reset split.
+
+ V 2.6 26-jun-2010 OD 
+
+	* quick filter on symbols
+	* cancel filter on filter zoom/text symbol  
+
+V 2.1 May 2010 OD
+
+V 1.0 15-march-2010 
+ 
+
