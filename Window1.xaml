@@ -37,12 +37,9 @@
                 <Menu Grid.Column="0" x:Name="menu1">
                     <MenuItem Header="_File" Foreground="White" >
                         <MenuItem Header="_Open" Command="ApplicationCommands.Open" />
-
                         <MenuItem Header="_Recent Files" >
                         <local:RecentFileList x:Name="RecentFileList" />
                         </MenuItem>
-
-
                         <MenuItem Header="E_xit" Command="ApplicationCommands.Close"  />
                         <MenuItem x:Name="MenuMergeItem"  Header="_Merge File" Click="MergeFile_Click" IsEnabled="{Binding CanMerge}"/>
                         <Separator />
@@ -54,9 +51,7 @@
                 </Menu>
             </Grid>
             <Grid x:Name="gridTopBar" Grid.Row="1" Height="32">
-
                 <Grid Margin="6,0,388.717,0" d:LayoutOverrides="HorizontalAlignment">
-
             		<StackPanel x:Name="spPath" Grid.Column="0" Orientation="Horizontal" Margin="0,0,-0.001,0" d:LayoutOverrides="Width">
             			<TextBlock
             				Text="Path:" VerticalAlignment="Center">
@@ -71,9 +66,7 @@
             				Margin="5,0" 
             				TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
             		</StackPanel>
-
             	</Grid>
-
                 <StackPanel x:Name="spCountAndSearch" Orientation="Horizontal" d:LayoutOverrides="Width" HorizontalAlignment="Right" Margin="0,0,6,0" VerticalAlignment="Center">
                     <StackPanel x:Name="spGlobalInfo" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,6,0" >
                         <local:FilterActivity x:Name="FilterIndicator" Width="19" Height="19" Margin="0,0,3,0" ToolTip="Filter state : blue = not filtered" MouseLeftButtonDown="FilterIndicator_MouseLeftButtonDown" />
@@ -290,14 +283,16 @@
 <!-- Data Fields and Tab Control  -->
             	<Grid Height="126" VerticalAlignment="Top" >
             		<Grid.ColumnDefinitions>
-            			<ColumnDefinition Width="47.214"/>
-            			<ColumnDefinition Width="0.297*"/>
-            			<ColumnDefinition Width="81.482"/>
-            			<ColumnDefinition Width="0.231*"/>
+            			<ColumnDefinition Width="30"/>
+                        <ColumnDefinition Width="17" />
+                        <ColumnDefinition Width="32"/>
+                        <ColumnDefinition Width="112" />
+                        <ColumnDefinition Width="81.482"/>
+            			<ColumnDefinition Width="112*"/>
             			<ColumnDefinition Width="96.796"/>
-            			<ColumnDefinition Width="0.197*"/>
+            			<ColumnDefinition Width="95*"/>
             			<ColumnDefinition Width="58.69"/>
-            			<ColumnDefinition Width="0.275*"/>
+            			<ColumnDefinition Width="133*"/>
             		</Grid.ColumnDefinitions>
             		<Grid.RowDefinitions>
             			<RowDefinition Height="10"/>
@@ -307,7 +302,6 @@
             			<RowDefinition Height="28"/>
             			<RowDefinition Height="10"/>
             		</Grid.RowDefinitions>
-
             		<i:Interaction.Behaviors>
             			<ei:FluidMoveBehavior AppliesTo="Children" Duration="0:0:0.35">
             				<ei:FluidMoveBehavior.EaseY>
@@ -320,88 +314,85 @@
             		</i:Interaction.Behaviors>
 
                 <!-- Row 1-->
-            		<Image x:Name="image1" Width="16" Height="16" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,5,0" />
-            		<TextBox x:Name="textBoxLevel" Grid.Column="1" Grid.Row="1" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center" />
-            		<Label x:Name="label1" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Time Stamp" VerticalAlignment="Center">
+            		<Image x:Name="image1" Width="16" Height="16" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,5,0" Grid.ColumnSpan="2" />
+            		<TextBox x:Name="textBoxLevel" Grid.Column="2" Grid.Row="1" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center" Grid.ColumnSpan="2" />
+            		<Label x:Name="label1" Grid.Column="4" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Time Stamp" VerticalAlignment="Center">
             			<Label.Foreground>
             				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
             			</Label.Foreground>
             		</Label>
-            		<TextBox x:Name="textBoxTimeStamp" Grid.Column="3" Grid.Row="1" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center" />
-            		<Label x:Name="label2" Grid.Column="4" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Machine Name" VerticalAlignment="Center">
+            		<TextBox x:Name="textBoxTimeStamp" Grid.Column="5" Grid.Row="1" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center" />
+            		<Label x:Name="label2" Grid.Column="6" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Machine Name" VerticalAlignment="Center">
             			<Label.Foreground>
             				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
             			</Label.Foreground>
             		</Label>
-            		<TextBox x:Name="textBoxMachineName" Grid.Column="5" Grid.Row="1" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center" />
-            		<Label x:Name="labelThread" Grid.Column="6" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Thread" VerticalAlignment="Center">
+            		<TextBox x:Name="textBoxMachineName" Grid.Column="7" Grid.Row="1" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center" />
+            		<Label x:Name="labelThread" Grid.Column="8" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Thread" VerticalAlignment="Center">
             			<Label.Foreground>
             				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
             			</Label.Foreground>
             		</Label>
-            		<TextBox x:Name="textBoxThread" Grid.Column="7" Grid.Row="1" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
-
+            		<TextBox x:Name="textBoxThread" Grid.Column="9" Grid.Row="1" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
                 <!-- Row 2 -->
-            		<Label x:Name="labelItem" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Item" VerticalAlignment="Center">
+            		<Label x:Name="labelItem" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Item" VerticalAlignment="Center" Grid.ColumnSpan="2">
             			<Label.Foreground>
             				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
             			</Label.Foreground>
             		</Label>
-            		<TextBox x:Name="textBoxItem" Grid.Column="1" Grid.Row="2" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center" />
-            		<Label x:Name="label4" Grid.Column="2" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Host Name" VerticalAlignment="Center">
+            		<TextBox x:Name="textBoxItem" Grid.Column="2" Grid.Row="2" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center" Grid.ColumnSpan="2" />
+            		<Label x:Name="label4" Grid.Column="4" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Host Name" VerticalAlignment="Center">
             			<Label.Foreground>
             				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
             			</Label.Foreground>
             		</Label>
-            		<TextBox x:Name="textBoxHostName" Grid.Column="3" Grid.Row="2" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
-            		<Label x:Name="label5" Grid.Column="4" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,5,3" Content="User Name" VerticalAlignment="Center">
+            		<TextBox x:Name="textBoxHostName" Grid.Column="5" Grid.Row="2" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
+            		<Label x:Name="label5" Grid.Column="6" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,5,3" Content="User Name" VerticalAlignment="Center">
             			<Label.Foreground>
             				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
             			</Label.Foreground>
             		</Label>
-            		<TextBox x:Name="textBoxUserName" Grid.Column="5" Grid.Row="2" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
-            		<Label x:Name="label6" Grid.Column="6" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,5,3" Content="App" VerticalAlignment="Center">
+            		<TextBox x:Name="textBoxUserName" Grid.Column="7" Grid.Row="2" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
+            		<Label x:Name="label6" Grid.Column="8" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,5,3" Content="App" VerticalAlignment="Center">
             			<Label.Foreground>
             				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
             			</Label.Foreground>
             		</Label>
-            		<TextBox x:Name="textBoxApp" Grid.Column="7" Grid.Row="2" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
-
+            		<TextBox x:Name="textBoxApp" Grid.Column="9" Grid.Row="2" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
                 <!-- Row 3-->
-            		<Label x:Name="label7" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Class" VerticalAlignment="Center">
+            		<Label x:Name="label7" Grid.Row="3" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Class" VerticalAlignment="Center" Grid.ColumnSpan="2">
             			<Label.Foreground>
             				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
             			</Label.Foreground>
             		</Label>
-            		<TextBox x:Name="textBoxClass" Grid.Column="1" Grid.Row="3" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
-            		<Label x:Name="label8" Grid.Column="2" Grid.Row="3" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Method" VerticalAlignment="Center">
+            		<TextBox x:Name="textBoxClass" Grid.Column="2" Grid.Row="3" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center" Grid.ColumnSpan="2" />
+            		<Label x:Name="label8" Grid.Column="4" Grid.Row="3" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Method" VerticalAlignment="Center">
             			<Label.Foreground>
             				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
             			</Label.Foreground>
             		</Label>
-            		<TextBox x:Name="textBoxMethod" Grid.Column="3" Grid.Row="3" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
-            		<Label x:Name="label9" Grid.Column="4" Grid.Row="3" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Line" VerticalAlignment="Center">
+            		<TextBox x:Name="textBoxMethod" Grid.Column="5" Grid.Row="3" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
+            		<Label x:Name="label9" Grid.Column="6" Grid.Row="3" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Line" VerticalAlignment="Center">
             			<Label.Foreground>
             				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
             			</Label.Foreground>
             		</Label>
-            		<TextBox x:Name="textBoxLine" Grid.Column="5" Grid.Row="3" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
+            		<TextBox x:Name="textBoxLine" Grid.Column="7" Grid.Row="3" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
 
-            		<Label x:Name="label6b" Grid.Column="6" Grid.Row="3" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Log File" VerticalAlignment="Center" MouseDoubleClick="label6b_MouseDoubleClick">
+            		<Label x:Name="label6b" Grid.Column="8" Grid.Row="3" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Log File" VerticalAlignment="Center" MouseDoubleClick="label6b_MouseDoubleClick">
             			<Label.Foreground>
             				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
             			</Label.Foreground>
             		</Label>
-            		<TextBox x:Name="textBoxLog" Grid.Column="7" Grid.Row="3" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
+            		<TextBox x:Name="textBoxLog" Grid.Column="9" Grid.Row="3" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
                 
                 <!-- Row 4-->
-            		<Label x:Name="labelFile" Grid.Column="0" Grid.Row="4" HorizontalAlignment="Right" Margin="0,0,5,3" Content="File" VerticalAlignment="Center">
+            		<Label x:Name="labelFile" Grid.Row="4" HorizontalAlignment="Right" Margin="0,0,5,3" Content="File" VerticalAlignment="Center" Grid.ColumnSpan="2">
             			<Label.Foreground>
             				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
             			</Label.Foreground>
             		</Label>
-            		<TextBox x:Name="textBoxfile" Grid.Column="1" Grid.ColumnSpan="7" Grid.Row="4" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
-
+            		<TextBox x:Name="textBoxfile" Grid.Column="2" Grid.ColumnSpan="8" Grid.Row="4" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
             	</Grid>
             	<TabControl x:Name="tabControl1" Margin="0,130,0,0" HorizontalAlignment="Stretch" MinHeight="50">
             		<TabItem Header="Message">
@@ -412,9 +403,7 @@
             		</TabItem>
             	</TabControl>
             </Grid>
-
             <!-- Data Fields and Tab Control  -->
             </Grid>
- 
     </DockPanel>
 </Window>

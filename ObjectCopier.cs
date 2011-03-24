@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using log4net;
 
 namespace LogViewer
 {
@@ -16,21 +17,30 @@ namespace LogViewer
         /// <typeparam name="T">The type of object being copied.</typeparam> 
         /// <param name="source">The object instance to copy.</param> 
         /// <returns>The copied object.</returns> 
+        /// 
+
+        private static readonly ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public static T Clone<T>(this T source)
         {
             if (!typeof(T).IsSerializable)
             {
+                log.Error("Type must be serializable");
                 throw new ArgumentException("The type must be serializable.", "source");
             }
 
             // Don't serialize a null object, simply return the default for that object 
+            log.Info("Don't serialize a null object, simply return the default for that object ");
             if (ReferenceEquals(source, null))
             {
                 return default(T);
             }
 
+            log.Info("Initializing IFormatter objec based on BinaryFormatter");
             IFormatter formatter = new BinaryFormatter();
+            log.Info("Initializing Memory Stream");
             Stream stream = new MemoryStream();
+            log.Info("Using the stream object to format the serialized data");
             using (stream)
             {
                 formatter.Serialize(stream, source);

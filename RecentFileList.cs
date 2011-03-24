@@ -32,6 +32,7 @@ using System.Xml;
 using System.Diagnostics;
 using System.Text;
 using System.Reflection;
+using log4net;
 
 namespace LogViewer
 {
@@ -43,6 +44,8 @@ namespace LogViewer
             void InsertFile(string filepath, int max);
             void RemoveFile(string filepath, int max);
         }
+
+        private static readonly ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private IPersist Persister { get; set; }
 
@@ -79,6 +82,7 @@ namespace LogViewer
 
         public RecentFileList()
         {
+            log.Info("Initializing the registry persister");
             Persister = new RegistryPersister();
 
             MaxNumberOfFiles = 9;
@@ -91,8 +95,13 @@ namespace LogViewer
 
         private void HookFileMenu()
         {
+            log.Info("Hooking up the file menu");
             var parent = Parent as MenuItem;
-            if (parent == null) throw new ApplicationException("Parent must be a MenuItem");
+            if (parent == null)
+            {
+                log.Error("Parent must be a menuItem");
+                throw new ApplicationException("Parent must be a MenuItem");
+            }
 
             if (FileMenu == parent) return;
 
@@ -113,23 +122,27 @@ namespace LogViewer
 
         void SetMenuItems()
         {
+            log.Info("Removing Menu Items");
             RemoveMenuItems();
-
+            log.Info("Loading Recent files");
             LoadRecentFiles();
-
+            log.Info("Insering Menuitems");
             InsertMenuItems();
         }
 
         void RemoveMenuItems()
         {
+            log.Info("Removing the menu separators");
             if (separator != null) FileMenu.Items.Remove(separator);
 
             if (recentFiles != null)
+            {
+                log.Info("Removing recent files from the menu items");
                 foreach (var r in recentFiles.Where(r => r.MenuItem != null))
                 {
                     FileMenu.Items.Remove(r.MenuItem);
                 }
-
+            }
             separator = null;
             recentFiles = null;
         }
@@ -140,6 +153,7 @@ namespace LogViewer
             if (recentFiles.Count == 0) return;
 
             var iMenuItem = FileMenu.Items.IndexOf(this);
+            log.Info("Loading recent files as menu items");
             foreach (var r in recentFiles)
             {
                 var header = GetMenuItemText(r.Number + 1, r.Filepath, r.DisplayPath);
@@ -160,9 +174,9 @@ namespace LogViewer
             if (delegateGetMenuItemText != null) return delegateGetMenuItemText(index, filepath);
 
             string format = (index < 10 ? MenuItemFormatOneToNine : MenuItemFormatTenPlus);
-
+            log.Info("Format is " + format.ToString());
             string shortPath = ShortenPathname(displaypath, MaxPathLength);
-
+            log.Info("The short path is " + shortPath.ToString());
             return String.Format(format, index, filepath, shortPath);
         }
 
@@ -185,6 +199,8 @@ namespace LogViewer
         /// <returns></returns>
         private static string ShortenPathname(string pathname, int maxLength)
         {
+            log.Info("Checking current pathname is less than the max length allowed");
+            log.Info("Path nane is " + pathname.ToString());
             if (pathname.Length <= maxLength)
                 return pathname;
 
@@ -195,7 +211,7 @@ namespace LogViewer
             var elements = pathname.Substring(root.Length).Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
             var filenameIndex = elements.GetLength(0) - 1;
-
+            log.Info("File name index is " + filenameIndex.ToString());
             if (elements.GetLength(0) == 1) // pathname is just a root and filename
             {
                 if (elements[0].Length > 5) // long enough to shorten
