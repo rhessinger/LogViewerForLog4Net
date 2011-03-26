@@ -1,0 +1,17 @@
+FOLLOW UP
+---------
+
+OD MARCH 2011
+This file has been added to the solution to allow each person working on this project to add notes.
+You can add entries following the same model of this one. Not perfect but can be important.
+
+Today I cleaned up a bit the code.
+private member must follow camel casing. Public ones PascalCasing.
+Some .ToString() and others of this kind are often useless, I suppressed them.
+File header as been normalized, all the same now.
+Each file has a History region. It will a good idea each person will add what it did on the file here.
+
+Project bin / obj folder has been marked as ignored on my side, try to set the same on your side.
+Theses folders are big and without any interest at this time. Later we will produce a binary release.
+
+------------------------------------------------------------------------------------------------------EOE

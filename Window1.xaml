@@ -12,16 +12,16 @@
     AllowDrop="True"
         MaxWidth="1024"
     Background="{DynamicResource WindowBackgroundBrush}"
-    DataContext="{Binding RelativeSource={RelativeSource Self}}" Closed="Window_Closed" WindowStartupLocation="CenterScreen">
+    DataContext="{Binding RelativeSource={RelativeSource Self}}" Closed="window_Closed" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <Color x:Key="LabelColor">#FFC3C9E9</Color>
     </Window.Resources>
     <Window.CommandBindings>
-        <CommandBinding Command="ApplicationCommands.Open" CanExecute="OpenCanExecute" Executed="OpenExecuted"/>
-        <CommandBinding Command="ApplicationCommands.Close" CanExecute="ExitCanExecute" Executed="ExitExecuted" />
-        <CommandBinding Command="NavigationCommands.Refresh" CanExecute="RefreshCanExecute" Executed="RefreshExecuted" />
-        <CommandBinding Command="NavigationCommands.Search" CanExecute="FilterCanExexute" Executed="FilterExecuted" />
-        <CommandBinding Command="ApplicationCommands.Help" CanExecute="AboutCanExecute" Executed="AboutExecuted" />
+        <CommandBinding Command="ApplicationCommands.Open" CanExecute="openCanExecute" Executed="openExecuted"/>
+        <CommandBinding Command="ApplicationCommands.Close" CanExecute="exitCanExecute" Executed="exitExecuted" />
+        <CommandBinding Command="NavigationCommands.Refresh" CanExecute="refreshCanExecute" Executed="refreshExecuted" />
+        <CommandBinding Command="NavigationCommands.Search" CanExecute="filterCanExexute" Executed="filterExecuted" />
+        <CommandBinding Command="ApplicationCommands.Help" CanExecute="aboutCanExecute" Executed="aboutExecuted" />
     </Window.CommandBindings>
  
     <DockPanel >
@@ -41,9 +41,9 @@
                         <local:RecentFileList x:Name="RecentFileList" />
                         </MenuItem>
                         <MenuItem Header="E_xit" Command="ApplicationCommands.Close"  />
-                        <MenuItem x:Name="MenuMergeItem"  Header="_Merge File" Click="MergeFile_Click" IsEnabled="{Binding CanMerge}"/>
+                        <MenuItem x:Name="MenuMergeItem"  Header="_Merge File" Click="mergeFile_Click" IsEnabled="{Binding CanMerge}"/>
                         <Separator />
-                        <MenuItem x:Name="ResetSeparator" Header="_Reset separator" Click="ResetSeparator_Click" />
+                        <MenuItem x:Name="ResetSeparator" Header="_Reset separator" Click="resetSeparator_Click" />
                     </MenuItem>
                     <MenuItem Header="_Refresh" Foreground="White" Command="NavigationCommands.Refresh" />
                     <MenuItem Header="F_ilter" Foreground="White" Command="NavigationCommands.Search"  />
@@ -69,8 +69,8 @@
             	</Grid>
                 <StackPanel x:Name="spCountAndSearch" Orientation="Horizontal" d:LayoutOverrides="Width" HorizontalAlignment="Right" Margin="0,0,6,0" VerticalAlignment="Center">
                     <StackPanel x:Name="spGlobalInfo" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,6,0" >
-                        <local:FilterActivity x:Name="FilterIndicator" Width="19" Height="19" Margin="0,0,3,0" ToolTip="Filter state : blue = not filtered" MouseLeftButtonDown="FilterIndicator_MouseLeftButtonDown" />
-                        <TextBlock x:Name="tbFiltered" TextWrapping="Wrap" Text="?" Foreground="#FFE7670D" Margin="0,0,3,0" VerticalAlignment="Center" ToolTip="# lines displayed [/total]" MouseLeftButtonDown="FilterIndicator_MouseLeftButtonDown" />
+                        <local:FilterActivity x:Name="FilterIndicator" Width="19" Height="19" Margin="0,0,3,0" ToolTip="Filter state : blue = not filtered" MouseLeftButtonDown="filterIndicator_MouseLeftButtonDown" />
+                        <TextBlock x:Name="tbFiltered" TextWrapping="Wrap" Text="?" Foreground="#FFE7670D" Margin="0,0,3,0" VerticalAlignment="Center" ToolTip="# lines displayed [/total]" MouseLeftButtonDown="filterIndicator_MouseLeftButtonDown" />
                     </StackPanel>
                     <StackPanel x:Name="spCounters" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,6,0" >
                         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">

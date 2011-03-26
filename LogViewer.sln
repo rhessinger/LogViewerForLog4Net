@@ -1,7 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogViewer", "LogViewer.csproj", "{9484E0F0-3AB8-4DCA-8A91-8E0FAC3F57E7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B1ADBE08-0ABE-4A8A-B766-30DDC4D93DED}"
+	ProjectSection(SolutionItems) = preProject
+		FollowUp.txt = FollowUp.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

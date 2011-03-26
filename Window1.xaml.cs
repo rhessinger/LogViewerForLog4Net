@@ -9,6 +9,7 @@
  *                2.1 May 2010 OD
  *                2.6 26-jun-2010 OD - add quick filter on symbols, cancel filter on filter zoom/text symbol  
  *                2.7 --Jul-2010 OD - save window size, split position. Reset split.
+ *                2.x -- Open Source Project on CodePlex
  *                
  *
  * Copyrights  : (c) 2010 Olivier Dahan for the enhanced version - www.e-naxos.com
@@ -42,6 +43,12 @@
  */
 #endregion
 
+
+#endregion
+
+#region History
+
+// 2010-26-03  OD      Some light corrections
 
 #endregion
 
@@ -81,12 +88,12 @@ namespace LogViewer
 
 
         private string fileName = string.Empty;
-        private static readonly ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         /// <summary>
         /// Gets or sets the name of the file.
         /// </summary>
         /// <value>The name of the file.</value>
-        private string FileName
+        public string FileName
         {
             get { return fileName; }
             set
@@ -112,37 +119,43 @@ namespace LogViewer
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Window1"/> class.
+        /// Main Window.
+        /// </summary>
         public Window1()
         {
             //Enabling Log4Net logging
             XmlConfigurator.Configure();
             if (log.IsInfoEnabled) log.Info("Application [Log4Viewer] Start");
-            if (log.IsDebugEnabled) log.Debug("Application running in Debug mode");
-            log.Info("Initialzing windows components");
+#if DEBUG   // OD - this info can be interesting when debugging a log coming from someone else.
+            log.Debug("Application running in Debug mode");
+#endif
+            log.Info("initializing windows components");
             InitializeComponent();
-            Loaded += Window1_Loaded;
-            log.Info("Setting default width to " + Properties.Settings.Default.AppWidth.ToString());
+            Loaded += window1_Loaded;
+            log.Info("Setting default width to " + Properties.Settings.Default.AppWidth);
             Width = Properties.Settings.Default.AppWidth;
-            log.Info("Setting default height to " + Properties.Settings.Default.AppHeight.ToString());
+            log.Info("Setting default height to " + Properties.Settings.Default.AppHeight);
             Height = Properties.Settings.Default.AppHeight;
-            log.Info("Setting default Grid Height to " + Properties.Settings.Default.Split.ToString());
+            log.Info("Setting default Grid Height to " + Properties.Settings.Default.Split);
             MainGrid.RowDefinitions[0].Height = new GridLength(Properties.Settings.Default.Split);
-            
+
         }
 
-        void Window1_Loaded(object sender, RoutedEventArgs e)
+        private void window1_Loaded(object sender, RoutedEventArgs e)
         {
             log.Info("Setting the UI Culture to fr-FR");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("fr-FR");
-            log.Info("Setting Max Width to " + SystemParameters.PrimaryScreenWidth.ToString());
+            log.Info("Setting Max Width to " + SystemParameters.PrimaryScreenWidth);
             MaxWidth = SystemParameters.PrimaryScreenWidth;
-            log.Info("Initializing event hanlder for listview control");
-            listView1.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(ListView1_HeaderClicked));
-            log.Info("Setting the RecentFileList to" + Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData).ToString()));
+            log.Info("Initializing event handler for ListView control");
+            listView1.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(listView1_HeaderClicked));
+            log.Info("Setting the RecentFileList to" + Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)));
             RecentFileList.UseXmlPersister(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "YourLog4NetViewer"));
             //RecentFileList.UseXmlPersister(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "EnaxosLogViewer.filehistory.xml"));
             log.Info("Initializing the RecentFiles menu click");
-            RecentFileList.MenuClick += (s, ee) => OpenFile(ee.Filepath);
+            RecentFileList.MenuClick += (s, ee) => openFile(ee.FilePath);
             log.Info("Initializing Error Bitmap");
             imageError.Source = Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Error.Handle, Int32Rect.Empty, null);
             log.Info("Initializing Info Bitmap");
@@ -152,7 +165,7 @@ namespace LogViewer
             log.Info("Initializing Debug Bitmap");
             imageDebug.Source = Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Question.Handle, Int32Rect.Empty, null);
             Title = string.Format(Properties.Resources.WindowTitle, Assembly.GetExecutingAssembly().GetName().Version);
-            log.Info("Setting the title as " + Title.ToString());
+            log.Info("Setting the title as " + Title);
             log.Info("Applying ExpressionDark Theme");
             this.ApplyTheme("ExpressionDark");
             log.Info("Setting the GridView widths for each column");
@@ -166,7 +179,7 @@ namespace LogViewer
         /// <summary>
         /// Clears this instance.
         /// </summary>
-        private void Clear()
+        private void clear()
         {
             log.Info("Clearing all the text controls");
             textBoxLevel.Text = string.Empty;
@@ -190,12 +203,12 @@ namespace LogViewer
         /// Opens the file.
         /// </summary>
         /// <param name="logFileName">Name of the file.</param>
-        private void OpenFile(string logFileName)
+        private void openFile(string logFileName)
         {
             log.Info("Clearing Merged Files");
             mergedFiles.Clear();
             log.Info("Loading file " + logFileName);
-            LoadFile(logFileName);
+            loadFile(logFileName);
         }
 
         private readonly List<string> mergedFiles = new List<string>();
@@ -203,7 +216,7 @@ namespace LogViewer
         /// <summary>
         /// Loads the file.
         /// </summary>
-        private void LoadFile(string logFileName, bool withMerge = false)
+        private void loadFile(string logFileName, bool withMerge = false)
         {
             if (!withMerge)
             {
@@ -211,7 +224,7 @@ namespace LogViewer
                 entries.Clear();
                 log.Info("Notifying Entries property as changed");
                 notifyPropertyChanged("Entries");
-                log.Info("Resetting the Listview item source to nothing");
+                log.Info("Resetting the ListView item source to nothing");
                 listView1.ItemsSource = null;
                 FileName = logFileName;
             }
@@ -234,7 +247,7 @@ namespace LogViewer
             var iIndex = 1;
             if (withMerge) iIndex = entries.Count + 1;
 
-            Clear();
+            clear();
 
             try
             {
@@ -260,7 +273,9 @@ namespace LogViewer
                         continue;
                     var logentry = new LogEntry { Item = iIndex };
 
+// ReSharper disable StringLiteralsWordIsNotInDictionary
                     var dSeconds = Convert.ToDouble(oXmlTextReader.GetAttribute("timestamp"));
+// ReSharper restore StringLiteralsWordIsNotInDictionary
                     logentry.TimeStamp = dt.AddMilliseconds(dSeconds).ToLocalTime();
                     logentry.Thread = oXmlTextReader.GetAttribute("thread");
                     logentry.LogFile = logFileName;
@@ -303,7 +318,7 @@ namespace LogViewer
                     }
                     ////////////////////////////////////////////////////////////////////////////////
                     #endregion
-                    
+
                     #region read xml
                     ////////////////////////////////////////////////////////////////////////////////
                     while (oXmlTextReader.Read())
@@ -349,7 +364,9 @@ namespace LogViewer
                                             }
                                             break;
                                         }
+// ReSharper disable StringLiteralsWordIsNotInDictionary
                                     case ("log4j:throwable"):
+// ReSharper restore StringLiteralsWordIsNotInDictionary
                                         {
                                             logentry.Throwable = oXmlTextReader.ReadString();
                                             break;
@@ -404,7 +421,7 @@ namespace LogViewer
                 labelErrorCount.Visibility = Visibility.Hidden;
                 imageError.Visibility = Visibility.Hidden;
             }
-            log.Info("ERROR count is " + errorCount.ToString());
+            log.Info("ERROR count is " + errorCount);
             log.Info("Calculating the number of INFO in the log file");
             var infoCount =
                 (
@@ -424,7 +441,7 @@ namespace LogViewer
                 labelInfoCount.Visibility = Visibility.Hidden;
                 imageInfo.Visibility = Visibility.Hidden;
             }
-            log.Info("INFO count is " + infoCount.ToString());
+            log.Info("INFO count is " + infoCount);
             log.Info("Calculating the number of WARN in the log file");
             var warnCount =
                 (
@@ -444,7 +461,7 @@ namespace LogViewer
                 labelWarnCount.Visibility = Visibility.Hidden;
                 imageWarn.Visibility = Visibility.Hidden;
             }
-            log.Info("WARN count is " + warnCount.ToString());
+            log.Info("WARN count is " + warnCount);
             log.Info("Calculating the number of DEBUG in the log file");
             var debugCount =
                 (
@@ -464,15 +481,15 @@ namespace LogViewer
                 imageDebug.Visibility = Visibility.Hidden;
                 labelDebugCount.Visibility = Visibility.Hidden;
             }
-            log.Info("DEBUG count is " + debugCount.ToString());
+            log.Info("DEBUG count is " + debugCount);
             tbFiltered.Text = Entries.Count().ToString();
             FilterIndicator.IsFiltered = false;
 
             ////////////////////////////////////////////////////////////////////////////////
             #endregion
-            log.Info("Initializing Listview to show the log entries");
+            log.Info("Initializing ListView to show the log entries");
             listView1.ItemsSource = null;
-            log.Info("Loading Listview with Log Entries");
+            log.Info("Loading ListView with Log Entries");
             listView1.ItemsSource = (from e in entries orderby e.TimeStamp select e).ToList();
             log.Info("Clearing Sort Adorner");
             clearSortAdorner();
@@ -498,7 +515,7 @@ namespace LogViewer
         private void listView1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             log.Info("Inside ListView selection changed and clearing the text controls");
-            Clear();
+            clear();
             log.Info("Getting the current Log Entry");
             var logentry = listView1.SelectedItem as LogEntry;
 
@@ -523,8 +540,8 @@ namespace LogViewer
         }
 
         private ListSortDirection direction = ListSortDirection.Descending;
-        private GridViewColumnHeader curSortCol = null;
-        private SortAdorner curAdorner = null;
+        private GridViewColumnHeader curSortCol;
+        private SortAdorner curAdorner;
 
 
         /// <summary>
@@ -532,7 +549,7 @@ namespace LogViewer
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
-        private void ListView1_HeaderClicked(object sender, RoutedEventArgs e)
+        private void listView1_HeaderClicked(object sender, RoutedEventArgs e)
         {
             log.Info("Handles the HeaderClicked event of the ListView control");
             var header = e.OriginalSource as GridViewColumnHeader;
@@ -544,7 +561,7 @@ namespace LogViewer
             dataView.SortDescriptions.Clear();
             log.Info("Determining the Sort direction");
             direction = direction == ListSortDirection.Ascending ? ListSortDirection.Descending : ListSortDirection.Ascending;
-            if (header != null && header.Content!=null)
+            if (header != null && header.Content != null)
             {
                 var description = new SortDescription(header.Content.ToString(), direction);
                 log.Info("Adding sort description from header content");
@@ -583,23 +600,23 @@ namespace LogViewer
                     var a = (Array)e.Data.GetData(DataFormats.FileDrop);
                     log.Info("Getting the Keyboard modifiers for validation");
                     var b = (Keyboard.Modifiers == ModifierKeys.Alt) || (a.Length > 1);
-                    log.Info("Checking if dragdrop has data");
+                    log.Info("Checking if drag drop has data");
                     if (a != null)
                     {
-                        log.Info("Iterating thorugh the array of dragdrop data");
+                        log.Info("Iterating through the array of drag drop data");
                         foreach (var file in a)
                         {
                             var f = file.ToString(); // a.GetValue(0).ToString();
                             var bb = b;
                             Dispatcher.BeginInvoke(
                                 DispatcherPriority.Background,
-                                (Action)(() => LoadFile(f, bb)));
+                                (Action)(() => loadFile(f, bb)));
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error in Drag Drop",ex);
+                    log.Error("Error in Drag Drop", ex);
                     MessageBox.Show("Error in Drag Drop: " + ex.Message);
                 }
             }
@@ -627,13 +644,13 @@ namespace LogViewer
             {
                 if (log.IsDebugEnabled)
                 {
-                    log.Info("Loading file " + oOpenFileDialog.FileNames[i].ToString());
+                    log.Info("Loading file " + oOpenFileDialog.FileNames[i]);
                 }
-                LoadFile(oOpenFileDialog.FileNames[i], i > 0);
+                loadFile(oOpenFileDialog.FileNames[i], i > 0);
             }
         }
 
-        private void MergeFile_Click(object sender, RoutedEventArgs e)
+        private void mergeFile_Click(object sender, RoutedEventArgs e)
         {
             log.Info("Initializing the open file dialog for filer merge click event");
             var oOpenFileDialog = new System.Windows.Forms.OpenFileDialog
@@ -648,8 +665,8 @@ namespace LogViewer
             {
                 if (log.IsDebugEnabled)
                 {
-                    log.Info("Loading file " + t.ToString());
-                    LoadFile(t, true);
+                    log.Info("Loading file " + t);
+                    loadFile(t, true);
                 }
             }
         }
@@ -658,7 +675,7 @@ namespace LogViewer
         {
             if (string.IsNullOrWhiteSpace(FileName))
             {
-                log.Info("Unable to refersh the empty source");
+                log.Info("Unable to refresh the empty source");
                 MessageBox.Show(Properties.Resources.CantRefreshEmptySource);
                 return;
             }
@@ -669,7 +686,7 @@ namespace LogViewer
                 return;
             }
             log.Info("Loading file " + FileName);
-            LoadFile(FileName);
+            loadFile(FileName);
             listView1.SelectedIndex = listView1.Items.Count - 1;
             if (listView1.Items.Count > 4)
             {
@@ -709,7 +726,7 @@ namespace LogViewer
             logFilter = tempFilter.Clone();
             logFilter.TrimAll();
 
-            log.Info("Initialzing the query object");
+            log.Info("Initializing the query object");
             var query = (from e in Entries select e);
 
             if (!string.IsNullOrWhiteSpace(logFilter.App))
@@ -737,16 +754,16 @@ namespace LogViewer
 
 
             var c = query.Count();
-            log.Info("Receieved queries " + query.Count().ToString());
+            log.Info("Received queries " + query.Count());
             FilterIndicator.IsFiltered = c > 0 && (c != Entries.Count());
             logFilter.IsFiltered = FilterIndicator.IsFiltered;
-            log.Info("Log Filter status " + logFilter.IsFiltered.ToString());
+            log.Info("Log Filter status " + logFilter.IsFiltered);
             LogFilter.FilteredEntries = FilterIndicator.IsFiltered ? query.ToList() : Entries;
             listView1.ItemsSource = logFilter.IsFiltered ? LogFilter.FilteredEntries : Entries;
             tbFiltered.Text = FilterIndicator.IsFiltered ? c + "/" + Entries.Count() : Entries.Count().ToString();
         }
 
-        private void CancelFilter()
+        private void cancelFilter()
         {
             log.Info("Clearing Log Filter");
             logFilter.Clear();
@@ -756,18 +773,18 @@ namespace LogViewer
             tbFiltered.Text = entries.Count().ToString();
         }
 
-        private void FilterIndicator_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void filterIndicator_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (!FilterIndicator.IsFiltered) return;
-            CancelFilter();
+            cancelFilter();
         }
 
         private enum MessageLevel { Error, Warning, Debug, Info }
 
-        private void QuickFilter(MessageLevel level)
+        private void quickFilter(MessageLevel level)
         {
             string s;
-            log.Info("Using quick filter for " + level.ToString());
+            log.Info("Using quick filter for " + level);
             switch (level)
             {
                 case MessageLevel.Error:
@@ -789,7 +806,7 @@ namespace LogViewer
             logFilter.Level = s;
             logFilter.TrimAll();
 
-            log.Info("Initializing the query objet for " + level.ToString());
+            log.Info("Initializing the query objet for " + level);
             var query = (from e in Entries select e);
             if (!string.IsNullOrWhiteSpace(logFilter.Level)) query = query.Where(e => e.Level == logFilter.Level);
 
@@ -805,25 +822,25 @@ namespace LogViewer
         private void imageError_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             log.Info("Enabling Quick filter for ERROR message level");
-            QuickFilter(MessageLevel.Error);
+            quickFilter(MessageLevel.Error);
         }
 
         private void imageInfo_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             log.Info("Enabling Quick filter for INFO message level");
-            QuickFilter(MessageLevel.Info);
+            quickFilter(MessageLevel.Info);
         }
 
         private void imageWarn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             log.Info("Enabling Quick filter for WARN message level");
-            QuickFilter(MessageLevel.Warning);
+            quickFilter(MessageLevel.Warning);
         }
 
         private void imageDebug_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             log.Info("Enabling Quick filter for DEBUG message level");
-            QuickFilter(MessageLevel.Debug);
+            quickFilter(MessageLevel.Debug);
         }
 
         private int currentIndex;
@@ -907,11 +924,18 @@ namespace LogViewer
 
 
 
+        /// <summary>
+        /// Gets a value indicating whether this instance can merge.
+        /// </summary>
+        /// <value><c>true</c> if this instance can merge; otherwise, <c>false</c>.</value>
         public bool CanMerge
         {
             get { return entries != null && entries.Count() > 0; }
         }
 
+        /// <summary>
+        /// Occurs when a property value changes.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
         private void notifyPropertyChanged(string property)
         {
@@ -924,82 +948,82 @@ namespace LogViewer
         private void label6b_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             LogEntry.JustFileName = !LogEntry.JustFileName;
-            log.Info("logentry file name on label6b mouse double click " + LogEntry.JustFileName.ToString());
+            log.Info("log entry file name on label6b mouse double click " + LogEntry.JustFileName);
             listView1_SelectionChanged(this, null);
         }
 
         #region commands
 
-        private void OpenCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void openCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
         }
 
-        private void OpenExecuted(object sender, ExecutedRoutedEventArgs e)
+        private void openExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             log.Info("Executing menu file open");
             doMenuFileOpen();
         }
 
-        private void ExitCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void exitCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
         }
 
-        private void ExitExecuted(object sender, ExecutedRoutedEventArgs e)
+        private void exitExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             Close();
         }
 
-        private void RefreshCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void refreshCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = !(string.IsNullOrWhiteSpace(FileName) || (mergedFiles.Count > 0));
-            log.Info("Can Refresh execute " + e.CanExecute.ToString() );
+            log.Info("Can Refresh execute " + e.CanExecute);
         }
 
-        private void RefreshExecuted(object sender, ExecutedRoutedEventArgs e)
+        private void refreshExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             log.Info("Execute menu refresh");
             doMenuRefresh();
         }
 
-        private void FilterCanExexute(object sender, CanExecuteRoutedEventArgs e)
+        private void filterCanExexute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = !string.IsNullOrWhiteSpace(FileName) || mergedFiles.Count > 0;
-            log.Info("Can filter execute " + e.CanExecute.ToString());
+            log.Info("Can filter execute " + e.CanExecute);
         }
 
-        private void FilterExecuted(object sender, ExecutedRoutedEventArgs e)
+        private void filterExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             log.Info("Do menu filter");
             doMenuFilter();
         }
 
-        private void AboutCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void aboutCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
         }
 
-        private void AboutExecuted(object sender, ExecutedRoutedEventArgs e)
+        private void aboutExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             log.Info("Executing about menu");
             doMenuAbout();
         }
         #endregion
 
-        private void Window_Closed(object sender, EventArgs e)
+        private void window_Closed(object sender, EventArgs e)
         {
-            log.Info("Saving default app width,height,split to open next time");
+            log.Info("Saving default application width,height,split to open next time");
             Properties.Settings.Default.AppWidth = Width;
             Properties.Settings.Default.AppHeight = Height;
             Properties.Settings.Default.Split = MainGrid.RowDefinitions[0].Height.Value;
             Properties.Settings.Default.Save();
         }
 
-        private void ResetSeparator_Click(object sender, RoutedEventArgs e)
+        private void resetSeparator_Click(object sender, RoutedEventArgs e)
         {
-            log.Info("Defining the heigh when reset reset separator is clicked");
+            log.Info("Defining the height when reset reset separator is clicked");
             MainGrid.RowDefinitions[0].Height = new GridLength(ActualHeight / 3);
         }
-     }
+    }
 }

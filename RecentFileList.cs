@@ -1,25 +1,57 @@
 ﻿#region Header
 
+#region Project
 /*
- * Customer    :  eurotvs
  * Project     :  LogViewer
- * Description :  Viewer for XML logs from Rafale and consoles
- * Version     :  1.0 beta 
- * Modified on :  1.0 15-3-2010
+ * Description :  Viewer for Log4Net XML logs (see About box for log4Net configuration).
+ * Version     :  2.7 
+ * Modified on :  1.0 15-3-2010 
+ *                2.1 May 2010 OD
+ *                2.6 26-jun-2010 OD - add quick filter on symbols, cancel filter on filter zoom/text symbol  
+ *                2.7 --Jul-2010 OD - save window size, split position. Reset split.
+ *                2.x -- Open Source Project on CodePlex
  *                
  *
- * Copyright 2008 Olivier Dahan - www.e-naxos.com
+ * Copyrights  : (c) 2010 Olivier Dahan for the enhanced version - www.e-naxos.com
+ *               (c) 2009 Ken C. Len for original version
+ *               
+ * LogViewer is a free software distributed on CodePlex : http://yourlog4netviewer.codeplex.com/ under the Microsoft Reciprocal License (Ms-RL)
  *
  */
+#endregion
 
-// 
-// www.e-naxos.com
-//  Warning : software guarantee is limited in time, all defaults must be detected by the customer during the test period as defined by the contract. 
-//            Modifying any file will cancelled the software guarantee, being the contract or the legal one.
-//  Attention : la garantie du logiciel est limitée dans le temps. Tous les défauts doivent être détectés par le client durant la période de test définie par le contrat.
-//              Modifier tout fichier de l'ensemble fourni annule immédiatement la garantie légale ainsi que la garantie contractuelle.
+#region Microsoft Reciprocal License (Ms-RL)
+/* 
+ * Microsoft Reciprocal License (Ms-RL)
+ * This license governs use of the accompanying software. If you use the software, you accept this license. If you do not accept the license, do not use the software.
+ * 1. Definitions
+ * The terms "reproduce," "reproduction," "derivative works," and "distribution" have the same meaning here as under U.S. copyright law.
+ * A "contribution" is the original software, or any additions or changes to the software.
+ * A "contributor" is any person that distributes its contribution under this license.
+ * "Licensed patents" are a contributor's patent claims that read directly on its contribution.
+ * 2. Grant of Rights
+ * (A) Copyright Grant- Subject to the terms of this license, including the license conditions and limitations in section 3, each contributor grants you a non-exclusive, worldwide, royalty-free copyright license to reproduce its contribution, prepare derivative works of its contribution, and distribute its contribution or any derivative works that you create.
+ * (B) Patent Grant- Subject to the terms of this license, including the license conditions and limitations in section 3, each contributor grants you a non-exclusive, worldwide, royalty-free license under its licensed patents to make, have made, use, sell, offer for sale, import, and/or otherwise dispose of its contribution in the software or derivative works of the contribution in the software.
+ * 3. Conditions and Limitations
+ * (A) Reciprocal Grants- For any file you distribute that contains code from the software (in source code or binary format), you must provide recipients the source code to that file along with a copy of this license, which license will govern that file. You may license other files that are entirely your own work and do not contain code from the software under any terms you choose.
+ * (B) No Trademark License- This license does not grant you rights to use any contributors' name, logo, or trademarks.
+ * (C) If you bring a patent claim against any contributor over patents that you claim are infringed by the software, your patent license from such contributor to the software ends automatically.
+ * (D) If you distribute any portion of the software, you must retain all copyright, patent, trademark, and attribution notices that are present in the software.
+ * (E) If you distribute any portion of the software in source code form, you may do so only under this license by including a complete copy of this license with your distribution. If you distribute any portion of the software in compiled or object code form, you may only do so under a license that complies with this license.
+ * (F) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws, the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
+ * 
+ */
+#endregion
+
 
 #endregion
+
+#region History
+
+    // 2010-26-03  OD      Some light corrections
+    
+#endregion
+
 
 using System;
 using System.Collections.Generic;
@@ -36,6 +68,9 @@ using log4net;
 
 namespace LogViewer
 {
+    /// <summary>
+    /// Manage the recent file list
+    /// </summary>
     public class RecentFileList : Separator
     {
         private interface IPersist
@@ -45,55 +80,99 @@ namespace LogViewer
             void RemoveFile(string filepath, int max);
         }
 
-        private static readonly ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private IPersist Persister { get; set; }
+        private IPersist persister { get; set; }
 
-        public void UseRegistryPersister() { Persister = new RegistryPersister(); }
-        public void UseRegistryPersister(string key) { Persister = new RegistryPersister(key); }
+        /// <summary>
+        /// Uses the registry persister.
+        /// </summary>
+        public void UseRegistryPersister() { persister = new RegistryPersister(); }
+        /// <summary>
+        /// Uses the registry persister.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        public void UseRegistryPersister(string key) { persister = new RegistryPersister(key); }
 
-        public void UseXmlPersister() { Persister = new XmlPersister(); }
-        public void UseXmlPersister(string filepath) { Persister = new XmlPersister(filepath); }
-        public void UseXmlPersister(Stream stream) { Persister = new XmlPersister(stream); }
+        /// <summary>
+        /// Uses the XML persister.
+        /// </summary>
+        public void UseXmlPersister() { persister = new XmlPersister(); }
+        /// <summary>
+        /// Uses the XML persister.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        public void UseXmlPersister(string filePath) { persister = new XmlPersister(filePath); }
+        /// <summary>
+        /// Uses the XML persister.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        public void UseXmlPersister(Stream stream) { persister = new XmlPersister(stream); }
 
+        /// <summary>
+        /// Gets or sets the max number of files.
+        /// </summary>
+        /// <value>The max number of files.</value>
         public int MaxNumberOfFiles { get; set; }
+        /// <summary>
+        /// Gets or sets the length of the max path.
+        /// </summary>
+        /// <value>The length of the max path.</value>
         public int MaxPathLength { get; set; }
+        /// <summary>
+        /// Gets or sets the file menu.
+        /// </summary>
+        /// <value>The file menu.</value>
         public MenuItem FileMenu { get; private set; }
 
         /// <summary>
-        /// Used in: String.Format( MenuItemFormat, index, filepath, displayPath );
+        /// Used in: String.Format( MenuItemFormat, index, file path, displayPath );
         /// Default = "_{0}:  {2}"
         /// </summary>
         public string MenuItemFormatOneToNine { get; set; }
 
         /// <summary>
-        /// Used in: String.Format( MenuItemFormat, index, filepath, displayPath );
+        /// Used in: String.Format( MenuItemFormat, index, file path, displayPath );
         /// Default = "{0}:  {2}"
         /// </summary>
         public string MenuItemFormatTenPlus { get; set; }
 
-        public delegate string GetMenuItemTextDelegate(int index, string filepath);
+        /// <summary>
+        /// Delegate
+        /// </summary>
+        public delegate string GetMenuItemTextDelegate(int index, string filePath);
+
+        /// <summary>
+        /// Gets or sets the get menu item text handler.
+        /// </summary>
+        /// <value>The get menu item text handler.</value>
         public GetMenuItemTextDelegate GetMenuItemTextHandler { get; set; }
 
+        /// <summary>
+        /// Occurs when [menu click].
+        /// </summary>
         public event EventHandler<MenuClickEventArgs> MenuClick;
 
         Separator separator;
         private List<RecentFile> recentFiles;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RecentFileList"/> class.
+        /// </summary>
         public RecentFileList()
         {
             log.Info("Initializing the registry persister");
-            Persister = new RegistryPersister();
+            persister = new RegistryPersister();
 
             MaxNumberOfFiles = 9;
             MaxPathLength = 50;
             MenuItemFormatOneToNine = "_{0}:  {2}";
             MenuItemFormatTenPlus = "{0}:  {2}";
 
-            Loaded += (s, e) => HookFileMenu();
+            Loaded += (s, e) => hookFileMenu();
         }
 
-        private void HookFileMenu()
+        private void hookFileMenu()
         {
             log.Info("Hooking up the file menu");
             var parent = Parent as MenuItem;
@@ -105,32 +184,41 @@ namespace LogViewer
 
             if (FileMenu == parent) return;
 
-            if (FileMenu != null) FileMenu.SubmenuOpened -= _FileMenu_SubmenuOpened;
+            if (FileMenu != null) FileMenu.SubmenuOpened -= fileMenu_SubmenuOpened;
 
             FileMenu = parent;
-            FileMenu.SubmenuOpened += _FileMenu_SubmenuOpened;
+            FileMenu.SubmenuOpened += fileMenu_SubmenuOpened;
         }
 
-        private List<string> RecentFiles { get { return Persister.RecentFiles(MaxNumberOfFiles); } }
-        public void RemoveFile(string filepath) { Persister.RemoveFile(filepath, MaxNumberOfFiles); }
-        public void InsertFile(string filepath) { Persister.InsertFile(filepath, MaxNumberOfFiles); }
+        private List<string> theRecentFiles { get { return persister.RecentFiles(MaxNumberOfFiles); } }
+        /// <summary>
+        /// Removes the file.
+        /// </summary>
+        /// <param name="filePath">The file Path.</param>
+        public void RemoveFile(string filePath) { persister.RemoveFile(filePath, MaxNumberOfFiles); }
+        
+        /// <summary>
+        /// Inserts the file.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        public void InsertFile(string filePath) { persister.InsertFile(filePath, MaxNumberOfFiles); }
 
-        void _FileMenu_SubmenuOpened(object sender, RoutedEventArgs e)
+        void fileMenu_SubmenuOpened(object sender, RoutedEventArgs e)
         {
-            SetMenuItems();
+            setMenuItems();
         }
 
-        void SetMenuItems()
+        void setMenuItems()
         {
             log.Info("Removing Menu Items");
-            RemoveMenuItems();
+            removeMenuItems();
             log.Info("Loading Recent files");
-            LoadRecentFiles();
-            log.Info("Insering Menuitems");
-            InsertMenuItems();
+            loadRecentFiles();
+            log.Info("Inserting Menu items");
+            insertMenuItems();
         }
 
-        void RemoveMenuItems()
+        void removeMenuItems()
         {
             log.Info("Removing the menu separators");
             if (separator != null) FileMenu.Items.Remove(separator);
@@ -147,7 +235,7 @@ namespace LogViewer
             recentFiles = null;
         }
 
-        void InsertMenuItems()
+        void insertMenuItems()
         {
             if (recentFiles == null) return;
             if (recentFiles.Count == 0) return;
@@ -156,10 +244,10 @@ namespace LogViewer
             log.Info("Loading recent files as menu items");
             foreach (var r in recentFiles)
             {
-                var header = GetMenuItemText(r.Number + 1, r.Filepath, r.DisplayPath);
+                var header = getMenuItemText(r.Number + 1, r.Filepath, r.DisplayPath);
 
                 r.MenuItem = new MenuItem { Header = header };
-                r.MenuItem.Click += MenuItem_Click;
+                r.MenuItem.Click += menuItem_Click;
 
                 FileMenu.Items.Insert(++iMenuItem, r.MenuItem);
             }
@@ -168,15 +256,15 @@ namespace LogViewer
             FileMenu.Items.Insert(++iMenuItem, separator);
         }
 
-        string GetMenuItemText(int index, string filepath, string displaypath)
+        string getMenuItemText(int index, string filepath, string displaypath)
         {
-            GetMenuItemTextDelegate delegateGetMenuItemText = GetMenuItemTextHandler;
+            var delegateGetMenuItemText = GetMenuItemTextHandler;
             if (delegateGetMenuItemText != null) return delegateGetMenuItemText(index, filepath);
 
-            string format = (index < 10 ? MenuItemFormatOneToNine : MenuItemFormatTenPlus);
-            log.Info("Format is " + format.ToString());
-            string shortPath = ShortenPathname(displaypath, MaxPathLength);
-            log.Info("The short path is " + shortPath.ToString());
+            var format = (index < 10 ? MenuItemFormatOneToNine : MenuItemFormatTenPlus);
+            log.Info("Format is " + format);
+            var shortPath = shortenPathname(displaypath, MaxPathLength);
+            log.Info("The short path is " + shortPath);
             return String.Format(format, index, filepath, shortPath);
         }
 
@@ -185,33 +273,33 @@ namespace LogViewer
         /// <summary>
         /// Shortens a pathname for display purposes.
         /// </summary>
-        /// <param Name="pathname">The pathname to shorten.</param>
-        /// <param Name="maxLength">The maximum number of characters to be displayed.</param>
+        /// <param name="pathName">Name of the path.</param>
+        /// <param name="maxLength">Length of the max.</param>
+        /// <returns></returns>
         /// <remarks>Shortens a pathname by either removing consecutive components of a path
         /// and/or by removing characters from the end of the filename and replacing
-        /// then with three elipses (...)
+        /// then with three ellipses (...)
         /// <para>In all cases, the root of the passed path will be preserved in it's entirety.</para>
-        /// <para>If a UNC path is used or the pathname and maxLength are particularly short,
-        /// the resulting path may be longer than maxLength.</para>
-        /// <para>This method expects fully resolved pathnames to be passed to it.
+        /// 	<para>If a UNC path is used or the pathname and max Length are particularly short,
+        /// the resulting path may be longer than max Length.</para>
+        /// 	<para>This method expects fully resolved pathnames to be passed to it.
         /// (Use Path.GetFullPath() to obtain this.)</para>
         /// </remarks>
-        /// <returns></returns>
-        private static string ShortenPathname(string pathname, int maxLength)
+        private static string shortenPathname(string pathName, int maxLength)
         {
             log.Info("Checking current pathname is less than the max length allowed");
-            log.Info("Path nane is " + pathname.ToString());
-            if (pathname.Length <= maxLength)
-                return pathname;
-
-            var root = Path.GetPathRoot(pathname);
+            log.Info("Path name is " + pathName);
+            if (pathName.Length <= maxLength)
+                return pathName;
+            //TODO: check if path is null
+            var root = Path.GetPathRoot(pathName);
             if (root.Length > 3)
                 root += Path.DirectorySeparatorChar;
 
-            var elements = pathname.Substring(root.Length).Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var elements = pathName.Substring(root.Length).Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
             var filenameIndex = elements.GetLength(0) - 1;
-            log.Info("File name index is " + filenameIndex.ToString());
+            log.Info("File name index is " + filenameIndex);
             if (elements.GetLength(0) == 1) // pathname is just a root and filename
             {
                 if (elements[0].Length > 5) // long enough to shorten
@@ -221,7 +309,7 @@ namespace LogViewer
                     {
                         return root + elements[0].Substring(0, 3) + "...";
                     }
-                    return pathname.Substring(0, maxLength - 3) + "...";
+                    return pathName.Substring(0, maxLength - 3) + "...";
                 }
             }
             else if ((root.Length + 4 + elements[filenameIndex].Length) > maxLength) // pathname is just a root and filename
@@ -258,7 +346,7 @@ namespace LogViewer
                     len = elements[i].Length;
                 }
 
-                var totalLength = pathname.Length - len + 3;
+                var totalLength = pathName.Length - len + 3;
                 var end = begin + 1;
 
                 while (totalLength > maxLength)
@@ -292,18 +380,18 @@ namespace LogViewer
 
                 return root + elements[filenameIndex];
             }
-            return pathname;
+            return pathName;
         }
 
-        void LoadRecentFiles()
+        private void loadRecentFiles()
         {
-            recentFiles = LoadRecentFilesCore();
+            recentFiles = loadRecentFilesCore();
         }
 
-        List<RecentFile> LoadRecentFilesCore()
+        private List<RecentFile> loadRecentFilesCore()
         {
 
-            var list = RecentFiles;
+            var list = theRecentFiles;
 
             var files = new List<RecentFile>(list.Count);
 
@@ -315,8 +403,8 @@ namespace LogViewer
 
         private class RecentFile
         {
-            public int Number;
-            public string Filepath = "";
+            public readonly int Number;
+            public readonly string Filepath = "";
             public MenuItem MenuItem;
 
             public string DisplayPath
@@ -336,26 +424,41 @@ namespace LogViewer
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public class MenuClickEventArgs : EventArgs
         {
-            public string Filepath { get; private set; }
+            /// <summary>
+            /// Gets or sets the filePath.
+            /// </summary>
+            /// <value>The filePath.</value>
+            public string FilePath { get; private set; }
 
-            public MenuClickEventArgs(string filepath)
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="theFilePath"></param>
+            public MenuClickEventArgs(string theFilePath)
             {
-                Filepath = filepath;
+                FilePath = theFilePath;
             }
         }
 
-        void MenuItem_Click(object sender, EventArgs e)
+        private void menuItem_Click(object sender, EventArgs e)
         {
             var menuItem = sender as MenuItem;
 
             OnMenuClick(menuItem);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="menuItem"></param>
         protected virtual void OnMenuClick(MenuItem menuItem)
         {
-            var filepath = GetFilepath(menuItem);
+            var filepath = getFilepath(menuItem);
 
             if (String.IsNullOrEmpty(filepath)) return;
 
@@ -363,7 +466,7 @@ namespace LogViewer
             if (dMenuClick != null) dMenuClick(menuItem, new MenuClickEventArgs(filepath));
         }
 
-        string GetFilepath(MenuItem menuItem)
+        private string getFilepath(MenuItem menuItem)
         {
             foreach (var r in recentFiles.Where(r => r.MenuItem == menuItem))
             {
@@ -389,7 +492,7 @@ namespace LogViewer
             public static string Copyright { get; private set; }
             public static string ProductName { get; private set; }
 
-            static Version version;
+            static readonly Version version;
             public static string Version { get; private set; }
 
             static ApplicationAttributes()
@@ -437,11 +540,11 @@ namespace LogViewer
 
         private class RegistryPersister : IPersist
         {
-            public string RegistryKey { get; set; }
+            private string registryKey { get; set; }
 
             public RegistryPersister()
             {
-                RegistryKey =
+                registryKey =
                     "Software\\" +
                     ApplicationAttributes.CompanyName + "\\" +
                     ApplicationAttributes.ProductName + "\\" +
@@ -450,21 +553,21 @@ namespace LogViewer
 
             public RegistryPersister(string key)
             {
-                RegistryKey = key;
+                registryKey = key;
             }
 
-            static string Key(int i) { return i.ToString("00"); }
+            private static string key(int i) { return i.ToString("00"); }
 
             public List<string> RecentFiles(int max)
             {
-                var k = Registry.CurrentUser.OpenSubKey(RegistryKey) ?? Registry.CurrentUser.CreateSubKey(RegistryKey);
+                var k = Registry.CurrentUser.OpenSubKey(registryKey) ?? Registry.CurrentUser.CreateSubKey(registryKey);
 
                 var list = new List<string>(max);
 
                 for (var i = 0; i < max; i++)
                 {
                     if (k == null) continue;
-                    var filename = (string)k.GetValue(Key(i));
+                    var filename = (string)k.GetValue(key(i));
 
                     if (String.IsNullOrEmpty(filename)) break;
 
@@ -476,16 +579,16 @@ namespace LogViewer
 
             public void InsertFile(string filepath, int max)
             {
-                var k = Registry.CurrentUser.OpenSubKey(RegistryKey);
-                if (k == null) Registry.CurrentUser.CreateSubKey(RegistryKey);
-                k = Registry.CurrentUser.OpenSubKey(RegistryKey, true);
+                var k = Registry.CurrentUser.OpenSubKey(registryKey);
+                if (k == null) Registry.CurrentUser.CreateSubKey(registryKey);
+                k = Registry.CurrentUser.OpenSubKey(registryKey, true);
 
                 RemoveFile(filepath, max);
 
                 for (var i = max - 2; i >= 0; i--)
                 {
-                    var sThis = Key(i);
-                    var sNext = Key(i + 1);
+                    var sThis = key(i);
+                    var sNext = key(i + 1);
 
                     if (k == null) continue;
                     var oThis = k.GetValue(sThis);
@@ -494,35 +597,35 @@ namespace LogViewer
                     k.SetValue(sNext, oThis);
                 }
 
-                if (k != null) k.SetValue(Key(0), filepath);
+                if (k != null) k.SetValue(key(0), filepath);
             }
 
-            public void RemoveFile(string filepath, int max)
+            public void RemoveFile(string theFilePath, int max)
             {
-                var k = Registry.CurrentUser.OpenSubKey(RegistryKey);
+                var k = Registry.CurrentUser.OpenSubKey(registryKey);
                 if (k == null) return;
 
                 for (var i = 0; i < max; i++)
                 {
                 again:
-                    var s = (string)k.GetValue(Key(i));
-                    if (s == null || !s.Equals(filepath, StringComparison.CurrentCultureIgnoreCase)) continue;
-                    RemoveFile(i, max);
+                    var s = (string)k.GetValue(key(i));
+                    if (s == null || !s.Equals(theFilePath, StringComparison.CurrentCultureIgnoreCase)) continue;
+                    removeFile(i, max);
                     goto again;
                 }
             }
 
-            void RemoveFile(int index, int max)
+            private void removeFile(int index, int max)
             {
-                var k = Registry.CurrentUser.OpenSubKey(RegistryKey, true);
+                var k = Registry.CurrentUser.OpenSubKey(registryKey, true);
                 if (k == null) return;
 
-                k.DeleteValue(Key(index), false);
+                k.DeleteValue(key(index), false);
 
                 for (var i = index; i < max - 1; i++)
                 {
-                    var sThis = Key(i);
-                    var sNext = Key(i + 1);
+                    var sThis = key(i);
+                    var sNext = key(i + 1);
 
                     var oNext = k.GetValue(sNext);
                     if (oNext == null) break;
@@ -537,12 +640,12 @@ namespace LogViewer
 
         private class XmlPersister : IPersist
         {
-            public string Filepath { get; set; }
-            public Stream Stream { get; set; }
+            private string filepath { get; set; }
+            private Stream stream { get; set; }
 
             public XmlPersister()
             {
-                Filepath =
+                filepath =
                     Path.Combine(
                         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                         ApplicationAttributes.CompanyName + "\\" +
@@ -552,43 +655,43 @@ namespace LogViewer
 
             public XmlPersister(string filepath)
             {
-                Filepath = filepath;
+                this.filepath = filepath;
             }
 
             public XmlPersister(Stream stream)
             {
-                Stream = stream;
+                this.stream = stream;
             }
 
             public List<string> RecentFiles(int max)
             {
-                return Load(max);
+                return load(max);
             }
 
-            public void InsertFile(string filepath, int max)
+            public void InsertFile(string theFilePath, int max)
             {
-                Update(filepath, true, max);
+                update(theFilePath, true, max);
             }
 
-            public void RemoveFile(string filepath, int max)
+            public void RemoveFile(string theFilePath, int max)
             {
-                Update(filepath, false, max);
+                update(theFilePath, false, max);
             }
 
-            void Update(string filepath, bool insert, int max)
+            private void update(string theFilePath, bool insert, int max)
             {
-                var old = Load(max);
+                var old = load(max);
 
                 var list = new List<string>(old.Count + 1);
 
-                if (insert) list.Add(filepath);
+                if (insert) list.Add(theFilePath);
 
-                CopyExcluding(old, filepath, list, max);
+                copyExcluding(old, theFilePath, list, max);
 
-                Save(list, max);
+                save(list, max);
             }
 
-            static void CopyExcluding(IEnumerable<string> source, string exclude, ICollection<string> target, int max)
+            private static void copyExcluding(IEnumerable<string> source, string exclude, ICollection<string> target, int max)
             {
                 foreach (var s in from s in source
                                   where !String.IsNullOrEmpty(s)
@@ -612,7 +715,9 @@ namespace LogViewer
                 {
                     isStreamOwned = true;
 
+// ReSharper disable AssignNullToNotNullAttribute
                     Directory.CreateDirectory(Path.GetDirectoryName(filepath));
+// ReSharper restore AssignNullToNotNullAttribute
 
                     Stream = File.Open(filepath, mode);
                 }
@@ -631,18 +736,18 @@ namespace LogViewer
                 }
             }
 
-            SmartStream OpenStream(FileMode mode)
+            private SmartStream openStream(FileMode mode)
             {
-                return !String.IsNullOrEmpty(Filepath) ? new SmartStream(Filepath, mode) : new SmartStream(Stream);
+                return !String.IsNullOrEmpty(filepath) ? new SmartStream(filepath, mode) : new SmartStream(stream);
             }
 
-            List<string> Load(int max)
+            private List<string> load(int max)
             {
                 var list = new List<string>(max);
 
                 using (var ms = new MemoryStream())
                 {
-                    using (var ss = OpenStream(FileMode.OpenOrCreate))
+                    using (var ss = openStream(FileMode.OpenOrCreate))
                     {
                         if (ss.Stream.Length == 0) return list;
 
@@ -682,7 +787,9 @@ namespace LogViewer
                                             if (list.Count < max) list.Add(x.GetAttribute(0));
                                             break;
 
+// ReSharper disable HeuristicUnreachableCode
                                         default: Debug.Assert(false); break;
+// ReSharper restore HeuristicUnreachableCode
                                     }
                                     break;
 
@@ -690,13 +797,19 @@ namespace LogViewer
                                     switch (x.Name)
                                     {
                                         case "RecentFiles": return list;
+// ReSharper disable HeuristicUnreachableCode
                                         default: Debug.Assert(false); break;
+// ReSharper restore HeuristicUnreachableCode
                                     }
+// ReSharper disable HeuristicUnreachableCode
                                     break;
+// ReSharper restore HeuristicUnreachableCode
 
                                 default:
                                     Debug.Assert(false);
+// ReSharper disable HeuristicUnreachableCode
                                     break;
+// ReSharper restore HeuristicUnreachableCode
                             }
                         }
                     }
@@ -708,7 +821,7 @@ namespace LogViewer
                 return list;
             }
 
-            void Save(IEnumerable<string> list, int max)
+            private void save(IEnumerable<string> list, int max)
             {
                 using (var ms = new MemoryStream())
                 {
@@ -723,10 +836,12 @@ namespace LogViewer
                         x.WriteStartElement("RecentFiles");
 
                         var cpt = 0;
-                        foreach (var filepath in list)
+                        foreach (var loopFilePath in list)
                         {
                             x.WriteStartElement("RecentFile");
-                            x.WriteAttributeString("Filepath", filepath);
+// ReSharper disable StringLiteralsWordIsNotInDictionary
+                            x.WriteAttributeString("Filepath", loopFilePath);
+// ReSharper restore StringLiteralsWordIsNotInDictionary
                             x.WriteEndElement();
                             cpt++;
                             if (cpt > max) break;
@@ -738,7 +853,7 @@ namespace LogViewer
 
                         x.Flush();
 
-                        using (var ss = OpenStream(FileMode.Create))
+                        using (var ss = openStream(FileMode.Create))
                         {
                             ss.Stream.SetLength(0);
 
