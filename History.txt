@@ -1,7 +1,16 @@
 YourLog4NetViewer - History
 ---------------------------
 
- V 2.7 --Jul-2010 OD 
+ V 2.7c Mar-2011 OD
+ 
+  * Some cleaning
+  * Adding file FollowUp.txt to allow information sharing between developers.
+  
+ V 2.7a 
+  
+  * Log4Net instrumention of the application 
+
+ V 2.7  Jul-2010 OD 
 
 	* save window size, 
 	* save split position. 

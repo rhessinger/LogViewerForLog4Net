@@ -2,4 +2,8 @@
 </Value></Property><Property><Name>svn:ignore</Name><Value>*.suo
 bin
 obj
+</Value></Property><Property><Name>svn:ignore</Name><Value>*.suo
+LogViewer.csproj.user
+bin
+obj
 </Value></Property></Properties></ItemProperties>
