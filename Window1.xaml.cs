@@ -563,9 +563,12 @@ namespace LogViewer
             direction = direction == ListSortDirection.Ascending ? ListSortDirection.Descending : ListSortDirection.Ascending;
             if (header != null && header.Content != null)
             {
-                var description = new SortDescription(header.Content.ToString(), direction);
-                log.Info("Adding sort description from header content");
-                dataView.SortDescriptions.Add(description);
+                if (header.Content.ToString() != "")
+                {
+                    var description = new SortDescription(header.Content.ToString(), direction);
+                    log.Info("Adding sort description from header content");
+                    dataView.SortDescriptions.Add(description);
+                }
             }
             log.Info("Refreshing the data view");
             dataView.Refresh();
