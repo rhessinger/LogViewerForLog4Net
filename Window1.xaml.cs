@@ -49,6 +49,10 @@
 #region History
 
 // 2010-26-03  OD      Some light corrections
+/* 06.01.2012  JB       adding Identity/NDC reading, displaying, filtering support.
+ *                      replaced IsNullOrWhiteSpace -> IsNullOrEmpty in doMenuFilter since logFilter.Trim() is called, thus there will never be WhiteSpace.
+ *                      added multi-logentry-select to concatenate multiple messages into the message textbox. */
+
 
 #endregion
 
@@ -74,6 +78,7 @@ using System.Reflection;
 using WPF.Themes;
 using log4net;
 using log4net.Config;
+using System.Text;
 
 #endregion
 
@@ -147,8 +152,8 @@ namespace LogViewer
         {
             log.Info("Setting the UI Culture to fr-FR");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("fr-FR");
-            log.Info("Setting Max Width to " + SystemParameters.PrimaryScreenWidth);
-            MaxWidth = SystemParameters.PrimaryScreenWidth;
+            //log.Info("Setting Max Width to " + SystemParameters.PrimaryScreenWidth);
+            //MaxWidth = SystemParameters.PrimaryScreenWidth;
             log.Info("Initializing event handler for ListView control");
             listView1.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(listView1_HeaderClicked));
             log.Info("Setting the RecentFileList to" + Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)));
@@ -197,6 +202,9 @@ namespace LogViewer
             textBoxMessage.Text = string.Empty;
             textBoxThrowable.Text = string.Empty;
             textBoxLog.Text = string.Empty;
+
+            textBoxIdentity.Text = string.Empty;
+            textBoxNDC.Text = string.Empty;
         }
 
         /// <summary>
@@ -354,6 +362,16 @@ namespace LogViewer
                                                 case ("log4net:UserName"):
                                                     {
                                                         logentry.UserName = oXmlTextReader.GetAttribute("value");
+                                                        break;
+                                                    }
+                                                case ("log4net:Identity"):
+                                                    {
+                                                        logentry.Identity = oXmlTextReader.GetAttribute("value");
+                                                        break;
+                                                    }
+                                                case ("NDC"):
+                                                    {
+                                                        logentry.NDC = oXmlTextReader.GetAttribute("value");
                                                         break;
                                                     }
                                                 case ("log4japp"):
@@ -517,26 +535,50 @@ namespace LogViewer
             log.Info("Inside ListView selection changed and clearing the text controls");
             clear();
             log.Info("Getting the current Log Entry");
-            var logentry = listView1.SelectedItem as LogEntry;
 
-            if (logentry == null) return;
-            log.Info("Show the selected log entry on the UI");
-            image1.Source = logentry.Image;
-            textBoxLevel.Text = logentry.Level;
-            textBoxTimeStamp.Text = logentry.TimeStamp.ToString(Properties.Resources.DisplayDatetimeFormat);
-            textBoxMachineName.Text = logentry.MachineName;
-            textBoxThread.Text = logentry.Thread;
-            textBoxItem.Text = logentry.Item.ToString();
-            textBoxHostName.Text = logentry.HostName;
-            textBoxUserName.Text = logentry.UserName;
-            textBoxApp.Text = logentry.App;
-            textBoxClass.Text = logentry.Class;
-            textBoxMethod.Text = logentry.Method;
-            textBoxLine.Text = logentry.Line;
-            textBoxLog.Text = logentry.LogFile;
-            textBoxMessage.Text = logentry.Message;
-            textBoxThrowable.Text = logentry.Throwable;
-            textBoxfile.Text = logentry.File;
+            if (listView1.SelectedItems.Count == 1)
+            {
+                log.Info("Show the selected log entry on the UI");
+
+                var logentry = listView1.SelectedItem as LogEntry;
+
+                image1.Source = logentry.Image;
+                textBoxLevel.Text = logentry.Level;
+                textBoxTimeStamp.Text = logentry.TimeStamp.ToString(Properties.Resources.DisplayDatetimeFormat);
+                textBoxMachineName.Text = logentry.MachineName;
+                textBoxThread.Text = logentry.Thread;
+                textBoxItem.Text = logentry.Item.ToString();
+                textBoxHostName.Text = logentry.HostName;
+                textBoxUserName.Text = logentry.UserName;
+                textBoxApp.Text = logentry.App;
+                textBoxClass.Text = logentry.Class;
+                textBoxMethod.Text = logentry.Method;
+                textBoxLine.Text = logentry.Line;
+                textBoxLog.Text = logentry.LogFile;
+                textBoxMessage.Text = logentry.Message;
+                textBoxThrowable.Text = logentry.Throwable;
+                textBoxfile.Text = logentry.File;
+
+                textBoxIdentity.Text = logentry.Identity;
+                textBoxNDC.Text = logentry.NDC;
+            }
+            else if (listView1.SelectedItems.Count > 1)
+            {
+                log.Info("Show the selected log entries on the UI");
+
+                foreach (LogEntry logEntry in listView1.SelectedItems)
+                {
+                    var msgToAppend = string.Format(
+                        new StringBuilder()
+                            .AppendLine("----------------- Entry #: {0} -------------------")
+                            .AppendLine("{1}").AppendLine().ToString()
+                        , logEntry.Item
+                        , logEntry.Message);
+
+                    textBoxMessage.Text += msgToAppend;
+                    textBoxThrowable.Text += logEntry.Throwable;
+                }
+            }
         }
 
         private ListSortDirection direction = ListSortDirection.Descending;
@@ -553,6 +595,10 @@ namespace LogViewer
         {
             log.Info("Handles the HeaderClicked event of the ListView control");
             var header = e.OriginalSource as GridViewColumnHeader;
+
+            if (header == null)
+                return;
+
             var source = e.Source as ListView;
             if (source == null) return;
             var dataView = CollectionViewSource.GetDefaultView(source.ItemsSource);
@@ -715,16 +761,18 @@ namespace LogViewer
 
         private LogFilter logFilter = new LogFilter();
 
-
-
         private void doMenuFilter()
         {
             log.Info("Cloning the log filter");
             var tempFilter = logFilter.Clone();
             var filter = new Filter(Entries, tempFilter) { Owner = this };
             log.Info("Showing the filter dialog");
+            
             filter.ShowDialog();
-            if (filter.DialogResult != true) return;
+
+            if (filter.DialogResult != true)
+                return;
+
             log.Info("Cloning the log filter again after loading new filters");
             logFilter = tempFilter.Clone();
             logFilter.TrimAll();
@@ -732,35 +780,42 @@ namespace LogViewer
             log.Info("Initializing the query object");
             var query = (from e in Entries select e);
 
-            if (!string.IsNullOrWhiteSpace(logFilter.App))
+            if (!string.IsNullOrEmpty(logFilter.App))
                 query = query.Where(e => e.App.ToUpperInvariant().Contains(logFilter.App.ToUpperInvariant()));
-            if (!string.IsNullOrWhiteSpace(logFilter.Level)) query = query.Where(e => e.Level == logFilter.Level);
-            if (!string.IsNullOrWhiteSpace(logFilter.Thread)) query = query.Where(e => e.Thread == logFilter.Thread);
-            if (!string.IsNullOrWhiteSpace(logFilter.Message))
+            if (!string.IsNullOrEmpty(logFilter.Level)) query = query.Where(e => e.Level == logFilter.Level);
+            if (!string.IsNullOrEmpty(logFilter.Thread)) query = query.Where(e => e.Thread == logFilter.Thread);
+            if (!string.IsNullOrEmpty(logFilter.Message))
                 query = query.Where(e => e.Message.ToUpperInvariant().Contains(logFilter.Message.ToUpperInvariant()));
-            if (!string.IsNullOrWhiteSpace(logFilter.MachineName))
+            if (!string.IsNullOrEmpty(logFilter.MachineName))
                 query = query.Where(e => e.MachineName.ToUpperInvariant().Contains(logFilter.MachineName.ToUpperInvariant()));
-            if (!string.IsNullOrWhiteSpace(logFilter.UserName))
+            if (!string.IsNullOrEmpty(logFilter.UserName))
                 query = query.Where(e => e.UserName.ToUpperInvariant().Contains(logFilter.UserName.ToUpperInvariant()));
-            if (!string.IsNullOrWhiteSpace(logFilter.HostName))
+            if (!string.IsNullOrEmpty(logFilter.HostName))
                 query = query.Where(e => e.HostName.ToUpperInvariant().Contains(logFilter.HostName.ToUpperInvariant()));
-            if (!string.IsNullOrWhiteSpace(logFilter.Throwable))
+            if (!string.IsNullOrEmpty(logFilter.Throwable))
                 query = query.Where(e => e.Throwable.ToUpperInvariant().Contains(logFilter.Throwable.ToUpperInvariant()));
-            if (!string.IsNullOrWhiteSpace(logFilter.Class))
+            if (!string.IsNullOrEmpty(logFilter.Class))
                 query = query.Where(e => e.Class.ToUpperInvariant().Contains(logFilter.Class.ToUpperInvariant()));
-            if (!string.IsNullOrWhiteSpace(logFilter.Method))
+            if (!string.IsNullOrEmpty(logFilter.Method))
                 query = query.Where(e => e.Method.ToUpperInvariant().Contains(logFilter.Method.ToUpperInvariant()));
-            if (!string.IsNullOrWhiteSpace(logFilter.File))
+            if (!string.IsNullOrEmpty(logFilter.File))
                 query = query.Where(e => e.File.ToUpperInvariant().Contains(logFilter.File.ToUpperInvariant()));
-            if (!string.IsNullOrWhiteSpace(logFilter.LogName))
+            if (!string.IsNullOrEmpty(logFilter.LogName))
                 query = query.Where(e => e.LogFile.ToUpperInvariant().Contains(logFilter.LogName.ToUpperInvariant()));
+            if (!string.IsNullOrEmpty(logFilter.Identity))
+                query = query.Where(e => e.Identity.ToUpperInvariant().Contains(logFilter.Identity.ToUpperInvariant()));
+            if (!string.IsNullOrEmpty(logFilter.NDC))
+                query = query.Where(e => e.NDC.ToUpperInvariant().Contains(logFilter.NDC.ToUpperInvariant()));
 
-
+            // TODO: shouldn't we be showing 0 results if the filter matched 0 results?
             var c = query.Count();
             log.Info("Received queries " + query.Count());
-            FilterIndicator.IsFiltered = c > 0 && (c != Entries.Count());
+
+            FilterIndicator.IsFiltered = query.Any() && (c != Entries.Count());
+            
             logFilter.IsFiltered = FilterIndicator.IsFiltered;
             log.Info("Log Filter status " + logFilter.IsFiltered);
+
             LogFilter.FilteredEntries = FilterIndicator.IsFiltered ? query.ToList() : Entries;
             listView1.ItemsSource = logFilter.IsFiltered ? LogFilter.FilteredEntries : Entries;
             tbFiltered.Text = FilterIndicator.IsFiltered ? c + "/" + Entries.Count() : Entries.Count().ToString();

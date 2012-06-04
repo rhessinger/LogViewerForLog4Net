@@ -173,6 +173,28 @@ namespace LogViewer
             set { userName = value; }
         }
 
+        private string identity = string.Empty;
+        /// <summary>
+        /// Gets or sets the name of the identity.
+        /// </summary>
+        /// <value>The name of the identity.</value>
+        public string Identity
+        {
+            get { return identity; }
+            set { identity = value; }
+        }
+
+        private string ndc = string.Empty;
+        /// <summary>
+        /// Gets or sets the NDC.
+        /// </summary>
+        /// <value>The NDC.</value>
+        public string NDC
+        {
+            get { return ndc; }
+            set { ndc = value; }
+        }
+
         private string hostName = string.Empty;
         /// <summary>
         /// Gets or sets the name of the host.

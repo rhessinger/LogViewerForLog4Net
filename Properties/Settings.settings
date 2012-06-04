@@ -6,10 +6,10 @@
       <Value Profile="(Default)">800</Value>
     </Setting>
     <Setting Name="AppHeight" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">800</Value>
+      <Value Profile="(Default)">600</Value>
     </Setting>
     <Setting Name="Split" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">400</Value>
+      <Value Profile="(Default)">150</Value>
     </Setting>
   </Settings>
 </SettingsFile>

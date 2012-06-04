@@ -10,9 +10,8 @@
     SizeToContent="Manual"
     ResizeMode="CanResizeWithGrip" 
     AllowDrop="True"
-        MaxWidth="1024"
     Background="{DynamicResource WindowBackgroundBrush}"
-    DataContext="{Binding RelativeSource={RelativeSource Self}}" Closed="window_Closed" WindowStartupLocation="CenterScreen">
+    DataContext="{Binding RelativeSource={RelativeSource Self}}" Closed="window_Closed" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Window.Resources>
         <Color x:Key="LabelColor">#FFC3C9E9</Color>
     </Window.Resources>
@@ -213,12 +212,13 @@
         </StatusBar>
         <Grid x:Name="MainGrid">
             <Grid.RowDefinitions>
-                <RowDefinition Height="302"/>
+                <RowDefinition Height="150"/>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*"  />
             </Grid.RowDefinitions>
              <!-- List View -->
             <Border BorderThickness="4,4,4,4" Margin="0" x:Name="borderTop" >
-                <ListView x:Name="listView1" 
+                <ListView x:Name="listView1"
             		Grid.Row="0" 
             		ItemsSource= "{Binding Entries, ElementName=Window1}" 
             		AllowDrop="True"
@@ -246,6 +246,8 @@
                                     <Setter Property="Background" Value="Gainsboro" />
                                 </DataTrigger>
                             </Style.Triggers>
+                            <Setter Property="Height" Value="20" />
+                            <Setter Property="VerticalContentAlignment" Value="Top" />
                         </Style>
                     </ListView.ItemContainerStyle>
                     <ListView.View>
@@ -260,8 +262,10 @@
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn  DisplayMemberBinding="{Binding Level}" Header="Level" />
+                            <GridViewColumn Header="NDC" DisplayMemberBinding="{Binding NDC}"  />
+                            <GridViewColumn Header="Identity" DisplayMemberBinding="{Binding Identity}"  />
+                            <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" />
                             <GridViewColumn Header="Thread" DisplayMemberBinding="{Binding Thread}"  />
-                            <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}"  />
                             <GridViewColumn Header="MachineName" DisplayMemberBinding="{Binding MachineName}"  />
                             <GridViewColumn Header="HostName" DisplayMemberBinding="{Binding HostName}"  />
                             <GridViewColumn Header="UserName" DisplayMemberBinding="{Binding UserName}"  />
@@ -271,7 +275,7 @@
                     </ListView.View>
                 </ListView>
             </Border>
-			 <GridSplitter x:Name="gridSplitter1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Grid.Row="1" Height="4" ResizeDirection="Rows" >
+			 <GridSplitter x:Name="gridSplitter1" Grid.Row="1" Height="8" HorizontalAlignment="Stretch" ResizeDirection="Rows" >
 			 	<GridSplitter.Background>
 			 		<RadialGradientBrush>
 			 			<GradientStop Color="#FF4E4E4E" Offset="1"/>
@@ -279,14 +283,14 @@
 			 		</RadialGradientBrush>
 			 	</GridSplitter.Background>
 			 </GridSplitter>
-            <Grid x:Name="bottomGrid" Margin="5,6,5,0" Grid.Row="1" >
+            <Grid x:Name="bottomGrid" Margin="5,6,5,0" Grid.Row="2" >
 <!-- Data Fields and Tab Control  -->
             	<Grid Height="126" VerticalAlignment="Top" >
             		<Grid.ColumnDefinitions>
             			<ColumnDefinition Width="30"/>
                         <ColumnDefinition Width="17" />
                         <ColumnDefinition Width="32"/>
-                        <ColumnDefinition Width="112" />
+                        <ColumnDefinition Width="90*" />
                         <ColumnDefinition Width="81.482"/>
             			<ColumnDefinition Width="112*"/>
             			<ColumnDefinition Width="96.796"/>
@@ -335,12 +339,12 @@
             		</Label>
             		<TextBox x:Name="textBoxThread" Grid.Column="9" Grid.Row="1" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
                 <!-- Row 2 -->
-            		<Label x:Name="labelItem" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Item" VerticalAlignment="Center" Grid.ColumnSpan="2">
+            		<Label x:Name="labelNDC" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,5,3" Content="NDC" VerticalAlignment="Center" Grid.ColumnSpan="2">
             			<Label.Foreground>
             				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
             			</Label.Foreground>
             		</Label>
-            		<TextBox x:Name="textBoxItem" Grid.Column="2" Grid.Row="2" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center" Grid.ColumnSpan="2" />
+            		<TextBox x:Name="textBoxNDC" Grid.Column="2" Grid.Row="2" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center" Grid.ColumnSpan="2" />
             		<Label x:Name="label4" Grid.Column="4" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Host Name" VerticalAlignment="Center">
             			<Label.Foreground>
             				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
@@ -371,15 +375,16 @@
             				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
             			</Label.Foreground>
             		</Label>
-            		<TextBox x:Name="textBoxMethod" Grid.Column="5" Grid.Row="3" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
-            		<Label x:Name="label9" Grid.Column="6" Grid.Row="3" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Line" VerticalAlignment="Center">
-            			<Label.Foreground>
-            				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
-            			</Label.Foreground>
-            		</Label>
-            		<TextBox x:Name="textBoxLine" Grid.Column="7" Grid.Row="3" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
+                    <TextBox x:Name="textBoxMethod" Grid.Column="5" Grid.Row="3" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
+                    <Label x:Name="label10" Grid.Column="6" Grid.Row="3" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Identity" VerticalAlignment="Center">
+                        <Label.Foreground>
+                            <SolidColorBrush Color="{DynamicResource LabelColor}"/>
+                        </Label.Foreground>
+                    </Label>
+                    <TextBox x:Name="textBoxIdentity" Grid.Column="7" Grid.Row="3" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
 
-            		<Label x:Name="label6b" Grid.Column="8" Grid.Row="3" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Log File" VerticalAlignment="Center" MouseDoubleClick="label6b_MouseDoubleClick">
+
+                    <Label x:Name="label6b" Grid.Column="8" Grid.Row="3" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Log File" VerticalAlignment="Center" MouseDoubleClick="label6b_MouseDoubleClick">
             			<Label.Foreground>
             				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
             			</Label.Foreground>
@@ -392,8 +397,24 @@
             				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
             			</Label.Foreground>
             		</Label>
-            		<TextBox x:Name="textBoxfile" Grid.Column="2" Grid.ColumnSpan="8" Grid.Row="4" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
-            	</Grid>
+            		<TextBox x:Name="textBoxfile" Grid.Column="2" Grid.ColumnSpan="4" Grid.Row="4" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center"/>
+                    
+                    <Label x:Name="label9" Grid.Column="6" Grid.Row="4" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Line" VerticalAlignment="Center">
+                        <Label.Foreground>
+                            <SolidColorBrush Color="{DynamicResource LabelColor}"/>
+                        </Label.Foreground>
+                    </Label>
+                    <TextBox x:Name="textBoxLine" Grid.Column="7" Grid.Row="4" IsReadOnly="True" Margin="0,0,0,4" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+                    <Label x:Name="labelItem" Grid.Row="4" Grid.Column="8" HorizontalAlignment="Right" Margin="0,0,5,3" Content="Item" VerticalAlignment="Center" >
+                        <Label.Foreground>
+                            <SolidColorBrush Color="{DynamicResource LabelColor}"/>
+                        </Label.Foreground>
+                    </Label>
+                    <TextBox x:Name="textBoxItem" Grid.Column="9" Grid.Row="4" IsReadOnly="True" Margin="0,0,0,4" VerticalAlignment="Center" />
+
+                </Grid>
+                
             	<TabControl x:Name="tabControl1" Margin="0,130,0,0" HorizontalAlignment="Stretch" MinHeight="50">
             		<TabItem Header="Message">
             			<TextBox x:Name="textBoxMessage" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" BorderThickness="0" IsReadOnly="True" />

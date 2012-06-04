@@ -49,7 +49,9 @@
 #region History
 
 // 2010-26-03  OD      Some light corrections
-
+/* 06.01.2012   JB      Added support for NDC / Identity.
+ *                      Fixed the Binding of the ComboBoxes so that manually-typed text is persisted to the LogFilter..
+ *                      Fixed Clear button behavior (temp, until LogFilter implements INotifyPropertyChanged */
 
 #endregion
 
@@ -86,7 +88,7 @@ namespace LogViewer
         private void populateDropDown(IEnumerable<LogEntry> entries)
         {
             comboBoxLevel.ItemsSource = (from e in entries select e.Level).Distinct().ToList();
-            comboBoxUserName.ItemsSource = (from e in entries select e.UserName).Distinct().OrderBy(e=>e).ToList();
+            comboBoxUserName.ItemsSource = (from e in entries select e.UserName).Distinct().OrderBy(e => e).ToList();
             comboBoxThread.ItemsSource = (from e in entries select e.Thread).Distinct().OrderBy(e => e).ToList();
             comboBoxMachineName.ItemsSource = (from e in entries select e.MachineName).Distinct().OrderBy(e => e).ToList();
             comboBoxHostName.ItemsSource = (from e in entries select e.HostName).Distinct().OrderBy(e => e).ToList();
@@ -95,11 +97,33 @@ namespace LogViewer
             comboBoxMethod.ItemsSource = (from e in entries select e.Method).Distinct().OrderBy(e => e).ToList();
             comboBoxFile.ItemsSource = (from e in entries select e.File).Distinct().OrderBy(e => e).ToList();
             comboLogFile.ItemsSource = (from e in entries select e.LogFile).Distinct().OrderBy(e => e).ToList();
+
+            //comboBoxNDC.ItemsSource = (from e in entries select e.NDC).Distinct().OrderBy(e => e).ToList();
+            comboBoxIdentity.ItemsSource = (from e in entries select e.Identity).Distinct().OrderBy(e => e).ToList();
         }
 
         private void buttonClear_Click(object sender, RoutedEventArgs e)
         {
             logFilter.Clear();
+
+            this.textBoxMessage.Text = string.Empty;
+            this.textBoxThrowable.Text = string.Empty;
+
+            this.comboBoxNDC.Text = string.Empty;
+            comboBoxIdentity.Text = string.Empty;
+            comboBoxLevel.Text = string.Empty;
+            comboBoxUserName.Text = string.Empty;
+            comboBoxThread.Text = string.Empty;
+            comboBoxMachineName.Text = string.Empty;
+            comboBoxHostName.Text = string.Empty;
+            comboBoxApplication.Text = string.Empty;
+            comboBoxClass.Text = string.Empty;
+            comboBoxMethod.Text = string.Empty;
+            comboBoxFile.Text = string.Empty;
+            comboLogFile.Text = string.Empty;
+
+            comboBoxIdentity.SelectedIndex = -1;
+            comboBoxNDC.SelectedIndex = -1;
             comboBoxLevel.SelectedIndex = -1;
             comboBoxUserName.SelectedIndex = -1;
             comboBoxThread.SelectedIndex = -1;

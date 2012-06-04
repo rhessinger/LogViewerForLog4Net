@@ -58,11 +58,13 @@ using System.Collections.Generic;
 namespace LogViewer
 {
     /// <summary>
-    /// A log entry
+    /// A log entry filter
     /// </summary>
     [Serializable]
     public class LogFilter
     {
+        // TODO: implement INotifyPropertyChanged ... everything bound to this effectively becomes a One-Time binding.
+
         /// <summary>
         /// Gets or sets the time stamp.
         /// </summary>
@@ -93,6 +95,16 @@ namespace LogViewer
         /// </summary>
         /// <value>The name of the user.</value>
         public string UserName { get; set; }
+        /// <summary>
+        /// Gets or sets the name of the user.
+        /// </summary>
+        /// <value>The name of the user.</value>
+        public string Identity { get; set; }
+        /// <summary>
+        /// Gets or sets the name of the user.
+        /// </summary>
+        /// <value>The name of the user.</value>
+        public string NDC { get; set; }
         /// <summary>
         /// Gets or sets the name of the host.
         /// </summary>
@@ -175,6 +187,8 @@ namespace LogViewer
             IsFiltered = false;
             LogName = string.Empty;
             FilteredEntries = null;
+            Identity = string.Empty;
+            NDC = string.Empty;
         }
 
         /// <summary>
@@ -192,9 +206,11 @@ namespace LogViewer
             MachineName = MachineName == null ? string.Empty : MachineName.Trim();
             Message = Message.Trim();
             Thread = Thread == null ? string.Empty : Thread.Trim();
-            Level = Level==null ? string.Empty : Level.Trim();
+            Level = Level == null ? string.Empty : Level.Trim();
             LogName = LogName == null ? string.Empty : LogName.Trim();
             Line = Line.Trim();
+            Identity = Identity == null ? string.Empty : Identity.Trim();
+            NDC = NDC == null ? string.Empty : NDC.Trim();
         }
 
     }

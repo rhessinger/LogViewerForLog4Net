@@ -68,7 +68,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
-      <HintPath>..\log4net-1.2.10\bin\net\2.0\release\log4net.dll</HintPath>
+      <HintPath>packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Effects" />
     <Reference Include="Microsoft.Expression.Interactions" />
@@ -101,9 +101,7 @@
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="WPF.Themes">
-      <HintPath>..\..\..\..\Clients\EuroTvs\SYO\Code annexe\WPF Themes\WPF.Themes\bin\Debug\WPF.Themes.dll</HintPath>
-    </Reference>
+    <Reference Include="WPF.Themes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=e18aa4b8ef9c8898, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -181,6 +179,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="LogViewer.pfx" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -210,6 +209,10 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Libs\WPF.Themes.dll" />
+    <Content Include="Libs\WPF.Themes.pdb" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

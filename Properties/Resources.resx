@@ -46,7 +46,7 @@
     
     mimetype: application/x-microsoft.net.object.binary.base64
     value   : The object must be serialized with 
-            : System.Serialization.Formatters.Binary.BinaryFormatter
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
     
     mimetype: application/x-microsoft.net.object.soap.base64
@@ -60,6 +60,7 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
@@ -68,9 +69,10 @@
               <xsd:sequence>
                 <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="name" use="required" type="xsd:string" />
               <xsd:attribute name="type" type="xsd:string" />
               <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
@@ -85,9 +87,10 @@
                 <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
                 <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
               <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
               <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
@@ -109,30 +112,30 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-	<data name="WindowTitle">
-		<value xml:space="preserve">Log4Net XML LogViewer  v.{0}</value>
-	</data>
-	<data name="DisplayDatetimeFormat">
-		<value xml:space="preserve">ddd dd/MM/yyyy HH:mm:ss.fff</value>
-	</data>
-	<data name="XmlOpenFilter">
-		<value xml:space="preserve">Xml log (*.xml)|*.xml</value>
-	</data>
-	<data name="OpenDialogTitle">
-		<value xml:space="preserve">Open one or more Log4Net Xml Log files</value>
-	</data>
-	<data name="MergeOpenDialog">
-		<value xml:space="preserve">Merge one or more Log4Net Xml Log files</value>
-	</data>
-	<data name="CantRefreshEmptySource">
-		<value><![CDATA[Can't refresh an empty view...]]></value>
-	</data>
-	<data name="NoRefreshOnMultipleSource">
-		<value xml:space="preserve">Refresh is not working on merged files.</value>
-	</data>
+  <data name="WindowTitle" xml:space="preserve">
+    <value>Log4Net XML LogViewer  v.{0}</value>
+  </data>
+  <data name="DisplayDatetimeFormat" xml:space="preserve">
+    <value>ddd dd/MM/yyyy HH:mm:ss.fff</value>
+  </data>
+  <data name="XmlOpenFilter" xml:space="preserve">
+    <value>Xml log (*.xml*)|*.xml*</value>
+  </data>
+  <data name="OpenDialogTitle" xml:space="preserve">
+    <value>Open one or more Log4Net Xml Log files</value>
+  </data>
+  <data name="MergeOpenDialog" xml:space="preserve">
+    <value>Merge one or more Log4Net Xml Log files</value>
+  </data>
+  <data name="CantRefreshEmptySource" xml:space="preserve">
+    <value>Can't refresh an empty view...</value>
+  </data>
+  <data name="NoRefreshOnMultipleSource" xml:space="preserve">
+    <value>Refresh is not working on merged files.</value>
+  </data>
 </root>
