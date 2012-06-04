@@ -60,6 +60,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using WPF.Themes;
+using System;
 
 namespace LogViewer
 {
@@ -82,7 +83,9 @@ namespace LogViewer
             populateDropDown(entries);
             this.logFilter = logFilter;
             MainGrid.DataContext = this.logFilter;
-            this.ApplyTheme("ExpressionDark");
+
+            try { this.ApplyTheme("ExpressionDark"); }
+            catch (Exception ex) { }
         }
 
         private void populateDropDown(IEnumerable<LogEntry> entries)
