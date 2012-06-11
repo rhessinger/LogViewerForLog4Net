@@ -50,25 +50,30 @@
                 </Menu>
             </Grid>
             <Grid x:Name="gridTopBar" Grid.Row="1" Height="32">
-                <Grid Margin="6,0,388.717,0" d:LayoutOverrides="HorizontalAlignment">
-            		<StackPanel x:Name="spPath" Grid.Column="0" Orientation="Horizontal" Margin="0,0,-0.001,0" d:LayoutOverrides="Width">
-            			<TextBlock
-            				Text="Path:" VerticalAlignment="Center">
-            				<TextBlock.Foreground>
-            					<SolidColorBrush Color="{DynamicResource LabelColor}"/>
-            				</TextBlock.Foreground>
-            			</TextBlock>
-            			<TextBlock x:Name="textboxFileName"
-            				Foreground="Orange"
-            				Background="Transparent"                       
-            				VerticalAlignment="Center" 
-            				Margin="5,0" 
-            				TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
-            		</StackPanel>
+            	<Grid.ColumnDefinitions>
+            		<ColumnDefinition/>
+            		<ColumnDefinition Width="Auto"/>
+            	</Grid.ColumnDefinitions>
+                <Grid x:Name="spPath" Grid.Column="0" Margin="9,0,6,0" d:LayoutOverrides="Width">
+                	<Grid.ColumnDefinitions>
+                		<ColumnDefinition Width="32"/>
+                		<ColumnDefinition/>
+                	</Grid.ColumnDefinitions>
+            		<TextBlock
+            			Text="Path:" VerticalAlignment="Center" HorizontalAlignment="Left">
+            			<TextBlock.Foreground>
+            				<SolidColorBrush Color="{DynamicResource LabelColor}"/>
+            			</TextBlock.Foreground>
+            		</TextBlock>
+            		<TextBlock x:Name="textboxFileName"
+            			Foreground="Orange"
+            			Background="Transparent"                       
+            			VerticalAlignment="Center" 
+            			TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Grid.Column="1"/>
             	</Grid>
-                <StackPanel x:Name="spCountAndSearch" Orientation="Horizontal" d:LayoutOverrides="Width" HorizontalAlignment="Right" Margin="0,0,6,0" VerticalAlignment="Center">
+                <StackPanel x:Name="spCountAndSearch" Orientation="Horizontal" d:LayoutOverrides="Width" Margin="5.396,0,6,0" VerticalAlignment="Center" Grid.Column="1">
                     <StackPanel x:Name="spGlobalInfo" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,6,0" >
-                        <local:FilterActivity x:Name="FilterIndicator" Width="19" Height="19" Margin="0,0,3,0" ToolTip="Filter state : blue = not filtered" MouseLeftButtonDown="filterIndicator_MouseLeftButtonDown" />
+                        <local:FilterActivity x:Name="FilterIndicator" Width="19" Height="19" Margin="0,0,3,0" ToolTip="Filter state : blue = not filtered" MouseLeftButtonDown="filterIndicator_MouseLeftButtonDown" Background="Transparent" />
                         <TextBlock x:Name="tbFiltered" TextWrapping="Wrap" Text="?" Foreground="#FFE7670D" Margin="0,0,3,0" VerticalAlignment="Center" ToolTip="# lines displayed [/total]" MouseLeftButtonDown="filterIndicator_MouseLeftButtonDown" />
                     </StackPanel>
                     <StackPanel x:Name="spCounters" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,6,0" >
@@ -80,25 +85,25 @@
             					</TextBlock.Foreground>
                             </TextBlock>
                         </StackPanel>
+                        <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                        	<Image x:Name="imageWarn" Height="16" Width="16" Visibility="Hidden" VerticalAlignment="Center" HorizontalAlignment="Center" MouseLeftButtonDown="imageWarn_MouseLeftButtonDown" />
+                        	<TextBlock x:Name="labelWarnCount" Visibility="Hidden" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="3,0,0,0">
+                        		<TextBlock.Foreground>
+                        			<SolidColorBrush Color="{DynamicResource LabelColor}"/>
+                        		</TextBlock.Foreground>
+                        	</TextBlock>
+                        </StackPanel>
+                        <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                        	<Image x:Name="imageDebug" Height="16" Width="16" Visibility="Hidden" HorizontalAlignment="Center" VerticalAlignment="Center" MouseLeftButtonDown="imageDebug_MouseLeftButtonDown" />
+                        	<TextBlock x:Name="labelDebugCount" Visibility="Hidden" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="3,0,0,0">
+                        		<TextBlock.Foreground>
+                        			<SolidColorBrush Color="{DynamicResource LabelColor}"/>
+                        		</TextBlock.Foreground>
+                        	</TextBlock>
+                        </StackPanel>
                         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                             <Image x:Name="imageInfo" Height="16" Width="16" Visibility="Hidden" VerticalAlignment="Center" HorizontalAlignment="Center" MouseLeftButtonDown="imageInfo_MouseLeftButtonDown" />
                             <TextBlock x:Name="labelInfoCount" Visibility="Hidden" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="3,0,0,0">
-            					<TextBlock.Foreground>
-            						<SolidColorBrush Color="{DynamicResource LabelColor}"/>
-            					</TextBlock.Foreground>
-                            </TextBlock>
-                        </StackPanel>
-                        <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
-                            <Image x:Name="imageWarn" Height="16" Width="16" Visibility="Hidden" VerticalAlignment="Center" HorizontalAlignment="Center" MouseLeftButtonDown="imageWarn_MouseLeftButtonDown" />
-                            <TextBlock x:Name="labelWarnCount" Visibility="Hidden" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="3,0,0,0">
-            					<TextBlock.Foreground>
-            						<SolidColorBrush Color="{DynamicResource LabelColor}"/>
-            					</TextBlock.Foreground>
-                            </TextBlock>
-                        </StackPanel>
-                        <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
-                            <Image x:Name="imageDebug" Height="16" Width="16" Visibility="Hidden" HorizontalAlignment="Center" VerticalAlignment="Center" MouseLeftButtonDown="imageDebug_MouseLeftButtonDown" />
-                            <TextBlock x:Name="labelDebugCount" Visibility="Hidden" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="3,0,0,0">
             					<TextBlock.Foreground>
             						<SolidColorBrush Color="{DynamicResource LabelColor}"/>
             					</TextBlock.Foreground>
@@ -117,22 +122,22 @@
                             <Button.Template>
                                 <ControlTemplate>
                                     <ControlTemplate.Resources>
-                                        <Storyboard x:Key="Storyboard1">
-                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="image">
-                                                <SplineDoubleKeyFrame KeyTime="0:0:0.2" Value="1.3"/>
-                                            </DoubleAnimationUsingKeyFrames>
-                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="image">
-                                                <SplineDoubleKeyFrame KeyTime="0:0:0.2" Value="1.3"/>
-                                            </DoubleAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                        <Storyboard x:Key="Storyboard2">
-                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="image">
-                                                <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
-                                            </DoubleAnimationUsingKeyFrames>
-                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="image">
-                                                <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
-                                            </DoubleAnimationUsingKeyFrames>
-                                        </Storyboard>
+                                    	<Storyboard x:Key="Storyboard1">
+                                    		<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="image">
+                                    			<SplineDoubleKeyFrame KeyTime="0:0:0.2" Value="1.3"/>
+                                    		</DoubleAnimationUsingKeyFrames>
+                                    		<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="image">
+                                    			<SplineDoubleKeyFrame KeyTime="0:0:0.2" Value="1.3"/>
+                                    		</DoubleAnimationUsingKeyFrames>
+                                    	</Storyboard>
+                                    	<Storyboard x:Key="Storyboard2">
+                                    		<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="image">
+                                    			<SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
+                                    		</DoubleAnimationUsingKeyFrames>
+                                    		<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="image">
+                                    			<SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
+                                    		</DoubleAnimationUsingKeyFrames>
+                                    	</Storyboard>
                                     </ControlTemplate.Resources>
                                     <Image x:Name="image" Width="16" Height="16" ToolTip="Find Next" Source="/LogViewer;component/Resources/Images/arrow_right.png" RenderTransformOrigin="0.5,0.5" >
                                         <Image.RenderTransform>
@@ -145,14 +150,14 @@
                                         </Image.RenderTransform>
                                     </Image>
                                     <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Trigger.ExitActions>
-                                                <BeginStoryboard x:Name="Storyboard2_BeginStoryboard" Storyboard="{StaticResource Storyboard2}"/>
-                                            </Trigger.ExitActions>
-                                            <Trigger.EnterActions>
-                                                <BeginStoryboard Storyboard="{StaticResource Storyboard1}"/>
-                                            </Trigger.EnterActions>
-                                        </Trigger>
+                                    	<Trigger Property="IsMouseOver" Value="True">
+                                    		<Trigger.ExitActions>
+                                    			<BeginStoryboard x:Name="Storyboard2_BeginStoryboard" Storyboard="{StaticResource Storyboard2}"/>
+                                    		</Trigger.ExitActions>
+                                    		<Trigger.EnterActions>
+                                    			<BeginStoryboard Storyboard="{StaticResource Storyboard1}"/>
+                                    		</Trigger.EnterActions>
+                                    	</Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Button.Template>
@@ -161,22 +166,22 @@
                             <Button.Template>
                                 <ControlTemplate>
                                     <ControlTemplate.Resources>
-                                        <Storyboard x:Key="Storyboard1">
-                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="image">
-                                                <SplineDoubleKeyFrame KeyTime="0:0:0.2" Value="1.3"/>
-                                            </DoubleAnimationUsingKeyFrames>
-                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="image">
-                                                <SplineDoubleKeyFrame KeyTime="0:0:0.2" Value="1.3"/>
-                                            </DoubleAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                        <Storyboard x:Key="Storyboard2">
-                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="image">
-                                                <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
-                                            </DoubleAnimationUsingKeyFrames>
-                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="image">
-                                                <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
-                                            </DoubleAnimationUsingKeyFrames>
-                                        </Storyboard>
+                                    	<Storyboard x:Key="Storyboard1">
+                                    		<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="image">
+                                    			<SplineDoubleKeyFrame KeyTime="0:0:0.2" Value="1.3"/>
+                                    		</DoubleAnimationUsingKeyFrames>
+                                    		<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="image">
+                                    			<SplineDoubleKeyFrame KeyTime="0:0:0.2" Value="1.3"/>
+                                    		</DoubleAnimationUsingKeyFrames>
+                                    	</Storyboard>
+                                    	<Storyboard x:Key="Storyboard2">
+                                    		<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="image">
+                                    			<SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
+                                    		</DoubleAnimationUsingKeyFrames>
+                                    		<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="image">
+                                    			<SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
+                                    		</DoubleAnimationUsingKeyFrames>
+                                    	</Storyboard>
                                     </ControlTemplate.Resources>
                                     <Image x:Name="image" Width="16" Height="16" ToolTip="Find Previous" Source="/LogViewer;component/Resources/Images/arrow_left.png" RenderTransformOrigin="0.5,0.5" >
                                         <Image.RenderTransform>
@@ -189,14 +194,14 @@
                                         </Image.RenderTransform>
                                     </Image>
                                     <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Trigger.ExitActions>
-                                                <BeginStoryboard x:Name="Storyboard2_BeginStoryboard" Storyboard="{StaticResource Storyboard2}"/>
-                                            </Trigger.ExitActions>
-                                            <Trigger.EnterActions>
-                                                <BeginStoryboard Storyboard="{StaticResource Storyboard1}"/>
-                                            </Trigger.EnterActions>
-                                        </Trigger>
+                                    	<Trigger Property="IsMouseOver" Value="True">
+                                    		<Trigger.ExitActions>
+                                    			<BeginStoryboard x:Name="Storyboard2_BeginStoryboard" Storyboard="{StaticResource Storyboard2}"/>
+                                    		</Trigger.ExitActions>
+                                    		<Trigger.EnterActions>
+                                    			<BeginStoryboard Storyboard="{StaticResource Storyboard1}"/>
+                                    		</Trigger.EnterActions>
+                                    	</Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Button.Template>

@@ -14,4 +14,12 @@ Each file has a History region. It will a good idea each person will add what it
 Project bin / obj folder has been marked as ignored on my side, try to set the same on your side.
 Theses folders are big and without any interest at this time. Later we will produce a binary release.
 
-------------------------------------------------------------------------------------------------------EOE
+-------------------------------------------------------------------------------
+
+OD June 2012
+Modifying topbar layout : when a lot of files where opened, file names were overwritting the filter symbol.
+I also changed the order of message priority filter, current order has no meaning. Now, first is Error, second is Warning, etc. A more logical order.
+I also modified the layout of the "Path" area in the topbar so now very long path (or multiple file names when many files are merged) are gently trimmed with CharacterEllipsis.
+The "FilterIndicator" (that can be clicked to clear current filtering) has now a transparent background so user can click it more easily (not only on the stroke of the drawing).
+Version is now 2.7.2.0
+----------------------------------------------
