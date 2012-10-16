@@ -12,4 +12,12 @@ bin
 obj
 _ReSharper.LogViewer
 LogViewer.6.0.ReSharper.user
+</Value></Property><Property><Name>svn:ignore</Name><Value>*.suo
+LogViewer.csproj.user
+bin
+obj
+_ReSharper.LogViewer
+LogViewer.6.0.ReSharper.user
+packages
+*.DotSettings.user
 </Value></Property></Properties></ItemProperties>
