@@ -23,3 +23,10 @@ I also modified the layout of the "Path" area in the topbar so now very long pat
 The "FilterIndicator" (that can be clicked to clear current filtering) has now a transparent background so user can click it more easily (not only on the stroke of the drawing).
 Version is now 2.7.2.0
 ----------------------------------------------
+
+RH October 2012
+Added command line arguments to application.  You can now drag and drop one or more files on top of the exe and it will open with those files loaded.  You can now also right click
+on a file and open it with the LogViewer and it will open the application with the file loaded.  Also now appends the file(s) to the end of the title (this helps in finding which 
+log viewer you want while having multiple instances open).
+Version is now 2.7.3.0
+----------------------------------------------

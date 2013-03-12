@@ -9,6 +9,7 @@
  *                2.1 May 2010 OD
  *                2.6 26-jun-2010 OD - add quick filter on symbols, cancel filter on filter zoom/text symbol  
  *                2.7 --Jul-2010 OD - save window size, split position. Reset split.
+ *                    --Oct-2012 RH - load files from cmd arguments
  *                2.x -- Open Source Project on CodePlex
  *                
  *
@@ -49,18 +50,51 @@
 #region History
 
 // 2010-26-03  OD      Some light corrections
-
+// 2012-10-16  RH      Changed to allow command line arguments to load files
 
 #endregion
 
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Windows;
+using log4net;
 
 namespace LogViewer
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
-    {
-    }
+	/// <summary>
+	/// Interaction logic for App.xaml
+	/// </summary>
+	public partial class App : Application
+	{
+		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private string[] _filesToLoad;
+
+		protected override void OnStartup(StartupEventArgs e)
+		{
+			base.OnStartup(e);
+			log.DebugFormat("Arguments passed to the application: {0}", string.Join(", ", e.Args));
+			_filesToLoad = e.Args;
+		}
+
+		protected override void OnActivated(System.EventArgs e)
+		{
+			base.OnActivated(e);
+			var window = (MainWindow as Window1);
+			if (window == null)
+				return;
+			var files = _filesToLoad.Where(File.Exists).Select(f => new FileInfo(f)).ToList();
+			for (var i = 0; i < files.Count; i++)
+			{
+				var file = files[i];
+				log.DebugFormat("Merging file: \"{0}\"", file.FullName);
+				log.DebugFormat("File Path: \"{0}\"", file.Directory);
+				log.DebugFormat("File Name: \"{0}\"", file.Name);
+				log.DebugFormat("File Extension: \"{0}\"", file.Extension);
+				window.loadFile(file.FullName, i > 0);
+			}
+			_filesToLoad = new string[0];
+		}
+	}
 }

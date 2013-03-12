@@ -169,7 +169,7 @@ namespace LogViewer
             imageWarn.Source = Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Warning.Handle, Int32Rect.Empty, null);
             log.Info("Initializing Debug Bitmap");
             imageDebug.Source = Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Question.Handle, Int32Rect.Empty, null);
-            Title = string.Format(Properties.Resources.WindowTitle, Assembly.GetExecutingAssembly().GetName().Version);
+			Title = string.Format(Properties.Resources.WindowTitle + (!string.IsNullOrWhiteSpace(FileName) ? " - " + FileName : string.Empty), Assembly.GetExecutingAssembly().GetName().Version);
             log.Info("Setting the title as " + Title);
             log.Info("Applying ExpressionDark Theme");
             this.ApplyTheme("ExpressionDark");
@@ -179,6 +179,7 @@ namespace LogViewer
                 gvc.Width = gvc.ActualWidth;
                 gvc.Width = Double.NaN;
             }
+			mergedFiles.ForEach(mergedFile => RecentFileList.InsertFile(mergedFile));
         }
 
         /// <summary>
@@ -224,7 +225,7 @@ namespace LogViewer
         /// <summary>
         /// Loads the file.
         /// </summary>
-        private void loadFile(string logFileName, bool withMerge = false)
+        public void loadFile(string logFileName, bool withMerge = false)
         {
             if (!withMerge)
             {
@@ -246,7 +247,7 @@ namespace LogViewer
                 mergedFiles.Add(logFileName);
             }
 
-            log.Info("Clearing the log filter");
+			log.Info("Clearing the log filter");
             logFilter.Clear();
             log.Info("Turning off the IsFiltered property of the FilterIndicator");
             FilterIndicator.IsFiltered = false;
@@ -514,7 +515,9 @@ namespace LogViewer
 
             if (!withMerge)
             {
-                textboxFileName.Text = logFileName;
+				textboxFileName.Text = logFileName;
+				Title = string.Format(Properties.Resources.WindowTitle + " - " + logFileName, Assembly.GetExecutingAssembly().GetName().Version);
+				log.Info("Setting the title as " + Title);
                 return;
             }
 
@@ -526,6 +529,8 @@ namespace LogViewer
             }
 
             textboxFileName.Text = s;
+			Title = string.Format(Properties.Resources.WindowTitle + " - " + s, Assembly.GetExecutingAssembly().GetName().Version);
+			log.Info("Setting the title as " + Title);
         }
 
         #region ListView Events
@@ -995,7 +1000,7 @@ namespace LogViewer
         /// Occurs when a property value changes.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
-        private void notifyPropertyChanged(string property)
+		public void notifyPropertyChanged(string property)
         {
             if (property == "Entries") notifyPropertyChanged("CanMerge");
             if (PropertyChanged == null) return;
