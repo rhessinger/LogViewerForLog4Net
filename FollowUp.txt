@@ -30,3 +30,8 @@ on a file and open it with the LogViewer and it will open the application with t
 log viewer you want while having multiple instances open).
 Version is now 2.7.3.0
 ----------------------------------------------
+
+RH May 2013
+Changed to use current culture date format.
+Version is now 2.7.4.0
+----------------------------------------------

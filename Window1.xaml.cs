@@ -549,7 +549,9 @@ namespace LogViewer
 
                 image1.Source = logentry.Image;
                 textBoxLevel.Text = logentry.Level;
-                textBoxTimeStamp.Text = logentry.TimeStamp.ToString(Properties.Resources.DisplayDatetimeFormat);
+	            textBoxTimeStamp.Text =
+		            logentry.TimeStamp.ToString(Properties.Resources.DisplayDayFormat + " " + CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern + " " +
+												Properties.Resources.DisplayTimeFormat);
                 textBoxMachineName.Text = logentry.MachineName;
                 textBoxThread.Text = logentry.Thread;
                 textBoxItem.Text = logentry.Item.ToString();

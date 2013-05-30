@@ -138,4 +138,10 @@
   <data name="NoRefreshOnMultipleSource" xml:space="preserve">
     <value>Refresh is not working on merged files.</value>
   </data>
+  <data name="DisplayDayFormat" xml:space="preserve">
+    <value>ddd</value>
+  </data>
+  <data name="DisplayTimeFormat" xml:space="preserve">
+    <value>HH:mm:ss.fff</value>
+  </data>
 </root>
