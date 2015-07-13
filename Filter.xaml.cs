@@ -52,6 +52,7 @@
 /* 06.01.2012   JB      Added support for NDC / Identity.
  *                      Fixed the Binding of the ComboBoxes so that manually-typed text is persisted to the LogFilter..
  *                      Fixed Clear button behavior (temp, until LogFilter implements INotifyPropertyChanged */
+// 2015-07-10  RH      Added Logger
 
 #endregion
 
@@ -100,6 +101,7 @@ namespace LogViewer
             comboBoxMethod.ItemsSource = (from e in entries select e.Method).Distinct().OrderBy(e => e).ToList();
             comboBoxFile.ItemsSource = (from e in entries select e.File).Distinct().OrderBy(e => e).ToList();
             comboLogFile.ItemsSource = (from e in entries select e.LogFile).Distinct().OrderBy(e => e).ToList();
+            comboLogger.ItemsSource = (from e in entries select e.Logger).Distinct().OrderBy(e => e).ToList();
 
             //comboBoxNDC.ItemsSource = (from e in entries select e.NDC).Distinct().OrderBy(e => e).ToList();
             comboBoxIdentity.ItemsSource = (from e in entries select e.Identity).Distinct().OrderBy(e => e).ToList();
@@ -124,6 +126,7 @@ namespace LogViewer
             comboBoxMethod.Text = string.Empty;
             comboBoxFile.Text = string.Empty;
             comboLogFile.Text = string.Empty;
+            comboLogger.Text = string.Empty;
 
             comboBoxIdentity.SelectedIndex = -1;
             comboBoxNDC.SelectedIndex = -1;
@@ -137,6 +140,7 @@ namespace LogViewer
             comboBoxMethod.SelectedIndex = -1;
             comboBoxFile.SelectedIndex = -1;
             comboLogFile.SelectedIndex = -1;
+            comboLogger.SelectedIndex = -1;
         }
 
         private void buttonOK_Click(object sender, RoutedEventArgs e)

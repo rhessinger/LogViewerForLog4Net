@@ -287,6 +287,7 @@ namespace LogViewer
 // ReSharper restore StringLiteralsWordIsNotInDictionary
                     logentry.TimeStamp = dt.AddMilliseconds(dSeconds).ToLocalTime();
                     logentry.Thread = oXmlTextReader.GetAttribute("thread");
+                    logentry.Logger = oXmlTextReader.GetAttribute("logger");
                     logentry.LogFile = logFileName;
 
                     #region get level
@@ -565,6 +566,7 @@ namespace LogViewer
                 textBoxMessage.Text = logentry.Message;
                 textBoxThrowable.Text = logentry.Throwable;
                 textBoxfile.Text = logentry.File;
+                textBoxLogger.Text = logentry.Logger;
 
                 textBoxIdentity.Text = logentry.Identity;
                 textBoxNDC.Text = logentry.NDC;
@@ -813,6 +815,8 @@ namespace LogViewer
                 query = query.Where(e => e.Identity.ToUpperInvariant().Contains(logFilter.Identity.ToUpperInvariant()));
             if (!string.IsNullOrEmpty(logFilter.NDC))
                 query = query.Where(e => e.NDC.ToUpperInvariant().Contains(logFilter.NDC.ToUpperInvariant()));
+            if (!string.IsNullOrEmpty(logFilter.Logger))
+                query = query.Where(e => e.Logger.ToUpperInvariant().Contains(logFilter.Logger.ToUpperInvariant()));
 
             // TODO: shouldn't we be showing 0 results if the filter matched 0 results?
             var c = query.Count();

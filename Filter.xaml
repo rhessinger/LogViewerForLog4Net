@@ -37,6 +37,7 @@
                 <RowDefinition Height="25"/>
                 <RowDefinition Height="25"/>
                 <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="90" />
@@ -70,6 +71,8 @@
             <ComboBox Grid.Column="1" Grid.Row="12" Height="23" Name="comboBoxFile" Text="{Binding File}" IsEditable="True" />
             <Label Grid.Column="0" Grid.Row="13" Height="28" Foreground="White" Content="Log File"></Label>
             <ComboBox Grid.Column="1" Grid.Row="13" Height="23" Name="comboLogFile" Text="{Binding LogName}" IsEditable="True" />
+            <Label Grid.Column="0" Grid.Row="14" Height="28" Foreground="White" Content="Logger"></Label>
+            <ComboBox Grid.Column="1" Grid.Row="14" Height="23" Name="comboLogger" Text="{Binding Logger}" IsEditable="True" />
             
         </Grid>
     </DockPanel>

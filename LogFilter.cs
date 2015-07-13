@@ -49,6 +49,7 @@
 #region History
 
 // 2010-26-03  OD      Some light corrections
+// 2015-07-10  RH      Added logger to filter
 
 #endregion
 
@@ -145,6 +146,11 @@ namespace LogViewer
         /// </summary>
         /// <value>The name of the log.</value>
         public string LogName { get; set; }
+        /// <summary>
+        /// Gets or sets the name of the logger.
+        /// </summary>
+        /// <value>The name of the logger.</value>
+        public string Logger { get; set; }
 
         /// <summary>
         /// last filtered list
@@ -189,6 +195,7 @@ namespace LogViewer
             FilteredEntries = null;
             Identity = string.Empty;
             NDC = string.Empty;
+            Logger = string.Empty;
         }
 
         /// <summary>
@@ -211,6 +218,7 @@ namespace LogViewer
             Line = Line.Trim();
             Identity = Identity == null ? string.Empty : Identity.Trim();
             NDC = NDC == null ? string.Empty : NDC.Trim();
+            Logger = Logger == null ? string.Empty : Logger.Trim();
         }
 
     }

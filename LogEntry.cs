@@ -49,6 +49,7 @@
 #region History
 
 // 2010-26-03  OD      Some light corrections
+// 2015-07-10  RH      Added 
 
 
 #endregion
@@ -308,6 +309,17 @@ namespace LogViewer
         {
             get { return justFileName; }
             set { justFileName = value; }
+        }
+        private string logger;
+
+        /// <summary>
+        /// Gets or sets a value indicating the logger used
+        /// </summary>
+        /// <value>The logger.</value>
+        public string Logger
+        {
+			get { return logger; }
+			set { logger = value; }
         }
 
     }
