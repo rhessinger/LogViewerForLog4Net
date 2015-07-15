@@ -38,5 +38,6 @@ Version is now 2.7.4.0
 
 RH July 2015
 Added logger to the log entry view and filter.
+Added LibZ to compress dlls.
 Version is now 2.7.5.0
 ----------------------------------------------
