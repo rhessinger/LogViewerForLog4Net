@@ -1,5 +1,15 @@
 YourLog4NetViewer - History
 ---------------------------
+ V 2.7.5 July-2015 RH (includes OD's notes)
+  * Modifyed topbar layout : when a lot of files where opened, file names were overwritting the filter symbol.
+  * Changed the order of message priority filter, current order has no meaning. Now, first is Error, second is Warning, etc. A more logical order.
+  * Modified the layout of the "Path" area in the topbar so now very long path (or multiple file names when many files are merged) are gently trimmed with CharacterEllipsis.
+  * The "FilterIndicator" (that can be clicked to clear current filtering) has now a transparent background so user can click it more easily (not only on the stroke of the drawing).
+  * Added command line arguments to application.  You can now drag and drop one or more files on top of the exe and it will open with those files loaded.  You can now also right click on a file and open it with the LogViewer and it will open the application with the file loaded.  
+  * Now appends the file(s) to the end of the title (this helps in finding which log viewer you want while having multiple instances open).
+  * Changed to use current culture date format.
+  * Added logger to the log entry view and filter.
+  * Added LibZ to compress dlls.
 
  V 2.7c Mar-2011 OD
  
