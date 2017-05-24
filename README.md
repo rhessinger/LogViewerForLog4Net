@@ -6,7 +6,9 @@ LogViewer is a WPF application allowing to view Log4Net log files. Logs must be 
 
 **Setup**
 
-Download latest binaries, unzip in any folder. Launch LogViewer.exe. That's all.To be able to manage your Log4Net logs with this application you must modify the way logs are formated. Open the LogViewer About Box and you'll see a little code sample that you must copy within your app.config file. Once it is done, your application will generate XML log files that can be read by LogViewer. Of course you can add this Log4Net configuration beside the existing one if any. For more information about Log4Net XML output please read the Log4Net documentation ([url:http://logging.apache.org/log4net/index.html]).  **The latest release will be migrated soon.  For now please download from [https://yourlog4netviewer.codeplex.com/releases].**
+Download latest binaries, unzip in any folder. Launch LogViewer.exe. That's all.To be able to manage your Log4Net logs with this application you must modify the way logs are formated. Open the LogViewer About Box and you'll see a little code sample that you must copy within your app.config file. Once it is done, your application will generate XML log files that can be read by LogViewer. Of course you can add this Log4Net configuration beside the existing one if any. For more information about Log4Net XML output please read the Log4Net documentation ([url:http://logging.apache.org/log4net/index.html]).  
+
+**The latest release will be migrated soon.  For now please download from [https://yourlog4netviewer.codeplex.com/releases].**
 
 **History**
 
