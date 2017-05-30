@@ -4,18 +4,19 @@
 /*
  * Project     :  LogViewer
  * Description :  Viewer for Log4Net XML logs (see About box for log4Net configuration).
- * Version     :  2.7 
+ * Version     :  3.0
  * Modified on :  1.0 15-3-2010 
  *                2.1 May 2010 OD
  *                2.6 26-jun-2010 OD - add quick filter on symbols, cancel filter on filter zoom/text symbol  
  *                2.7 --Jul-2010 OD - save window size, split position. Reset split.
  *                2.x -- Open Source Project on CodePlex
+ *                3.0 Windows Store version OD (change from codeplex to GitHub)
  *                
  *
- * Copyrights  : (c) 2010 Olivier Dahan for the enhanced version - www.e-naxos.com
+ * Copyrights  : (c) 2010/2017 Olivier Dahan for the enhanced version & Windows Store version - www.e-naxos.com
  *               (c) 2009 Ken C. Len for original version
  *               
- * LogViewer is a free software distributed on CodePlex : http://yourlog4netviewer.codeplex.com/ under the Microsoft Reciprocal License (Ms-RL)
+ * LogViewer is a free software distributed on GitHub under the Microsoft Reciprocal License (Ms-RL)
  *
  */
 #endregion
@@ -59,7 +60,6 @@ using System.Windows;
 using System.Reflection;
 using System.Windows.Documents;
 using System.Windows.Navigation;
-using WPF.Themes;
 
 namespace LogViewer
 {
@@ -78,7 +78,6 @@ namespace LogViewer
 
         private void window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.ApplyTheme("ExpressionDark");
             var sbText = new StringBuilder();
             var assembly = Assembly.GetEntryAssembly();
             if (assembly != null)
@@ -90,12 +89,12 @@ namespace LogViewer
                     if (type == typeof(AssemblyTitleAttribute))
                     {
                         var title = (AssemblyTitleAttribute)attribute;
-                        labelAssemblyName.Content = title.Title;
+                        LabelAssemblyName.Content = title.Title;
                     }
                     if (type == typeof(AssemblyFileVersionAttribute))
                     {
                         var version = (AssemblyFileVersionAttribute)attribute;
-                        labelAssemblyVersion.Content = version.Version;
+                        LabelAssemblyVersion.Content = version.Version;
                     }
                     if (type == typeof(AssemblyCopyrightAttribute))
                     {
@@ -113,7 +112,7 @@ namespace LogViewer
                         sbText.AppendFormat("{0}\r", description.Description);
                     }
                 }
-                labelAssembly.Content = sbText.ToString();
+                LabelAssembly.Content = sbText.ToString();
             }
 // ReSharper disable VerbatimStringLiteralsWordIsNotInDictionary
             const string text = @"<log4net>

@@ -41,3 +41,12 @@ Added logger to the log entry view and filter.
 Added LibZ to compress dlls.
 Version is now 2.7.5.0
 ----------------------------------------------
+
+OD MAY 2017
+Forking the copy by RH on GitHub to create a new version that will be distributed via Windows Store.
+- .NET 4.6.2
+- Suppressed : WPF.Themes
+- Suppressed : LibZ packer
+- Code revision
+Should be do : adopt MVVM pattern, code is old-style...
+----------------------------------------------

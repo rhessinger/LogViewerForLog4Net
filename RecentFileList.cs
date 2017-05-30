@@ -80,7 +80,7 @@ namespace LogViewer
             void RemoveFile(string filepath, int max);
         }
 
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private IPersist persister { get; set; }
 
@@ -153,15 +153,15 @@ namespace LogViewer
         /// </summary>
         public event EventHandler<MenuClickEventArgs> MenuClick;
 
-        Separator separator;
-        private List<RecentFile> recentFiles;
+        Separator _separator;
+        private List<RecentFile> _recentFiles;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RecentFileList"/> class.
         /// </summary>
         public RecentFileList()
         {
-            log.Info("Initializing the registry persister");
+            Log.Info("Initializing the registry persister");
             persister = new RegistryPersister();
 
             MaxNumberOfFiles = 9;
@@ -174,11 +174,11 @@ namespace LogViewer
 
         private void hookFileMenu()
         {
-            log.Info("Hooking up the file menu");
+            Log.Info("Hooking up the file menu");
             var parent = Parent as MenuItem;
             if (parent == null)
             {
-                log.Error("Parent must be a menuItem");
+                Log.Error("Parent must be a menuItem");
                 throw new ApplicationException("Parent must be a MenuItem");
             }
 
@@ -190,7 +190,8 @@ namespace LogViewer
             FileMenu.SubmenuOpened += fileMenu_SubmenuOpened;
         }
 
-        private List<string> theRecentFiles { get { return persister.RecentFiles(MaxNumberOfFiles); } }
+        private List<string> TheRecentFiles => persister.RecentFiles(MaxNumberOfFiles);
+
         /// <summary>
         /// Removes the file.
         /// </summary>
@@ -203,46 +204,46 @@ namespace LogViewer
         /// <param name="filePath">The file path.</param>
         public void InsertFile(string filePath) { persister.InsertFile(filePath, MaxNumberOfFiles); }
 
-        void fileMenu_SubmenuOpened(object sender, RoutedEventArgs e)
+        private void fileMenu_SubmenuOpened(object sender, RoutedEventArgs e)
         {
             setMenuItems();
         }
 
         void setMenuItems()
         {
-            log.Info("Removing Menu Items");
+            Log.Info("Removing Menu Items");
             removeMenuItems();
-            log.Info("Loading Recent files");
+            Log.Info("Loading Recent files");
             loadRecentFiles();
-            log.Info("Inserting Menu items");
+            Log.Info("Inserting Menu items");
             insertMenuItems();
         }
 
         void removeMenuItems()
         {
-            log.Info("Removing the menu separators");
-            if (separator != null) FileMenu.Items.Remove(separator);
+            Log.Info("Removing the menu separators");
+            if (_separator != null) FileMenu.Items.Remove(_separator);
 
-            if (recentFiles != null)
+            if (_recentFiles != null)
             {
-                log.Info("Removing recent files from the menu items");
-                foreach (var r in recentFiles.Where(r => r.MenuItem != null))
+                Log.Info("Removing recent files from the menu items");
+                foreach (var r in _recentFiles.Where(r => r.MenuItem != null))
                 {
                     FileMenu.Items.Remove(r.MenuItem);
                 }
             }
-            separator = null;
-            recentFiles = null;
+            _separator = null;
+            _recentFiles = null;
         }
 
         void insertMenuItems()
         {
-            if (recentFiles == null) return;
-            if (recentFiles.Count == 0) return;
+            if (_recentFiles == null) return;
+            if (_recentFiles.Count == 0) return;
 
             var iMenuItem = FileMenu.Items.IndexOf(this);
-            log.Info("Loading recent files as menu items");
-            foreach (var r in recentFiles)
+            Log.Info("Loading recent files as menu items");
+            foreach (var r in _recentFiles)
             {
                 var header = getMenuItemText(r.Number + 1, r.Filepath, r.DisplayPath);
 
@@ -252,8 +253,8 @@ namespace LogViewer
                 FileMenu.Items.Insert(++iMenuItem, r.MenuItem);
             }
 
-            separator = new Separator();
-            FileMenu.Items.Insert(++iMenuItem, separator);
+            _separator = new Separator();
+            FileMenu.Items.Insert(++iMenuItem, _separator);
         }
 
         string getMenuItemText(int index, string filepath, string displaypath)
@@ -262,10 +263,10 @@ namespace LogViewer
             if (delegateGetMenuItemText != null) return delegateGetMenuItemText(index, filepath);
 
             var format = (index < 10 ? MenuItemFormatOneToNine : MenuItemFormatTenPlus);
-            log.Info("Format is " + format);
+            Log.Info("Format is " + format);
             var shortPath = shortenPathname(displaypath, MaxPathLength);
-            log.Info("The short path is " + shortPath);
-            return String.Format(format, index, filepath, shortPath);
+            Log.Info("The short path is " + shortPath);
+            return string.Format(format, index, filepath, shortPath);
         }
 
         // This method is taken from Joe Woodbury's article at: http://www.codeproject.com/KB/cs/mrutoolstripmenu.aspx
@@ -287,11 +288,10 @@ namespace LogViewer
         /// </remarks>
         private static string shortenPathname(string pathName, int maxLength)
         {
-            log.Info("Checking current pathname is less than the max length allowed");
-            log.Info("Path name is " + pathName);
-            if (pathName.Length <= maxLength)
-                return pathName;
-            //TODO: check if path is null
+            Log.Info("Checking current pathname is less than the max length allowed");
+            Log.Info("Path name is " + pathName);
+            if (string.IsNullOrWhiteSpace(pathName)) return null;
+            if (pathName.Length <= maxLength) return pathName;
             var root = Path.GetPathRoot(pathName);
             if (root.Length > 3)
                 root += Path.DirectorySeparatorChar;
@@ -299,7 +299,7 @@ namespace LogViewer
             var elements = pathName.Substring(root.Length).Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
             var filenameIndex = elements.GetLength(0) - 1;
-            log.Info("File name index is " + filenameIndex);
+            Log.Info("File name index is " + filenameIndex);
             if (elements.GetLength(0) == 1) // pathname is just a root and filename
             {
                 if (elements[0].Length > 5) // long enough to shorten
@@ -316,7 +316,7 @@ namespace LogViewer
             {
                 root += "...\\";
 
-                int len = elements[filenameIndex].Length;
+                var len = elements[filenameIndex].Length;
                 if (len < 6)
                     return root + elements[filenameIndex];
 
@@ -373,7 +373,7 @@ namespace LogViewer
 
                 root += "...\\";
 
-                for (int i = end; i < filenameIndex; i++)
+                for (var i = end; i < filenameIndex; i++)
                 {
                     root += elements[i] + '\\';
                 }
@@ -385,13 +385,13 @@ namespace LogViewer
 
         private void loadRecentFiles()
         {
-            recentFiles = loadRecentFilesCore();
+            _recentFiles = loadRecentFilesCore();
         }
 
         private List<RecentFile> loadRecentFilesCore()
         {
 
-            var list = theRecentFiles;
+            var list = TheRecentFiles;
 
             var files = new List<RecentFile>(list.Count);
 
@@ -404,18 +404,12 @@ namespace LogViewer
         private class RecentFile
         {
             public readonly int Number;
-            public readonly string Filepath = "";
+            public readonly string Filepath = string.Empty;
             public MenuItem MenuItem;
 
-            public string DisplayPath
-            {
-                get
-                {
-                    return Path.Combine(
-                        Path.GetDirectoryName(Filepath),
-                        Path.GetFileNameWithoutExtension(Filepath));
-                }
-            }
+            public string DisplayPath => string.IsNullOrWhiteSpace(Filepath)? string.Empty : Path.Combine(
+                Path.GetDirectoryName(Filepath),
+                Path.GetFileNameWithoutExtension(Filepath));
 
             public RecentFile(int number, string filepath)
             {
@@ -460,29 +454,26 @@ namespace LogViewer
         {
             var filepath = getFilepath(menuItem);
 
-            if (String.IsNullOrEmpty(filepath)) return;
+            if (string.IsNullOrEmpty(filepath)) return;
 
-            var dMenuClick = MenuClick;
-            if (dMenuClick != null) dMenuClick(menuItem, new MenuClickEventArgs(filepath));
+            MenuClick?.Invoke(menuItem, new MenuClickEventArgs(filepath));
         }
 
         private string getFilepath(MenuItem menuItem)
         {
-            foreach (var r in recentFiles.Where(r => r.MenuItem == menuItem))
+            foreach (var r in _recentFiles.Where(r => r.MenuItem == menuItem))
             {
                 return r.Filepath;
             }
 
-            return String.Empty;
+            return string.Empty;
         }
 
         //-----------------------------------------------------------------------------------------
 
         static class ApplicationAttributes
         {
-            static readonly Assembly assembly;
-
-            static readonly AssemblyTitleAttribute title;
+            private static readonly AssemblyTitleAttribute title;
             static readonly AssemblyCompanyAttribute company;
             static readonly AssemblyCopyrightAttribute copyright;
             static readonly AssemblyProductAttribute product;
@@ -499,13 +490,13 @@ namespace LogViewer
             {
                 try
                 {
-                    Title = String.Empty;
-                    CompanyName = String.Empty;
-                    Copyright = String.Empty;
-                    ProductName = String.Empty;
-                    Version = String.Empty;
+                    Title = string.Empty;
+                    CompanyName = string.Empty;
+                    Copyright = string.Empty;
+                    ProductName = string.Empty;
+                    Version = string.Empty;
 
-                    assembly = Assembly.GetEntryAssembly();
+                    var assembly = Assembly.GetEntryAssembly();
 
                     if (assembly != null)
                     {
@@ -590,14 +581,13 @@ namespace LogViewer
                     var sThis = key(i);
                     var sNext = key(i + 1);
 
-                    if (k == null) continue;
-                    var oThis = k.GetValue(sThis);
+                    var oThis = k?.GetValue(sThis);
                     if (oThis == null) continue;
 
                     k.SetValue(sNext, oThis);
                 }
 
-                if (k != null) k.SetValue(key(0), filepath);
+                k?.SetValue(key(0), filepath);
             }
 
             public void RemoveFile(string theFilePath, int max)
@@ -730,7 +720,7 @@ namespace LogViewer
 
                 public void Dispose()
                 {
-                    if (isStreamOwned && Stream != null) Stream.Dispose();
+                    if (isStreamOwned) Stream?.Dispose();
 
                     Stream = null;
                 }
@@ -815,7 +805,7 @@ namespace LogViewer
                     }
                     finally
                     {
-                        if (x != null) x.Close();
+                        x?.Close();
                     }
                 }
                 return list;
@@ -870,7 +860,7 @@ namespace LogViewer
                     }
                     finally
                     {
-                        if (x != null) x.Close();
+                        x?.Close();
                     }
                 }
             }

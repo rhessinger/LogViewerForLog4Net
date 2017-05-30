@@ -60,7 +60,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using WPF.Themes;
 using System;
 
 namespace LogViewer
@@ -70,7 +69,7 @@ namespace LogViewer
     /// </summary>
     public partial class Filter
     {
-        private readonly LogFilter logFilter;
+        private readonly LogFilter _logFilter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Filter"/> class.
@@ -82,34 +81,32 @@ namespace LogViewer
             Opacity = 0d;
             InitializeComponent();
             populateDropDown(entries);
-            this.logFilter = logFilter;
-            MainGrid.DataContext = this.logFilter;
-
-            try { this.ApplyTheme("ExpressionDark"); }
-            catch (Exception ex) { }
+            this._logFilter = logFilter;
+            MainGrid.DataContext = this._logFilter;
         }
 
         private void populateDropDown(IEnumerable<LogEntry> entries)
         {
-            comboBoxLevel.ItemsSource = (from e in entries select e.Level).Distinct().ToList();
-            comboBoxUserName.ItemsSource = (from e in entries select e.UserName).Distinct().OrderBy(e => e).ToList();
-            comboBoxThread.ItemsSource = (from e in entries select e.Thread).Distinct().OrderBy(e => e).ToList();
-            comboBoxMachineName.ItemsSource = (from e in entries select e.MachineName).Distinct().OrderBy(e => e).ToList();
-            comboBoxHostName.ItemsSource = (from e in entries select e.HostName).Distinct().OrderBy(e => e).ToList();
-            comboBoxApplication.ItemsSource = (from e in entries select e.App).Distinct().OrderBy(e => e).ToList();
-            comboBoxClass.ItemsSource = (from e in entries select e.Class).Distinct().OrderBy(e => e).ToList();
-            comboBoxMethod.ItemsSource = (from e in entries select e.Method).Distinct().OrderBy(e => e).ToList();
-            comboBoxFile.ItemsSource = (from e in entries select e.File).Distinct().OrderBy(e => e).ToList();
-            comboLogFile.ItemsSource = (from e in entries select e.LogFile).Distinct().OrderBy(e => e).ToList();
-            comboLogger.ItemsSource = (from e in entries select e.Logger).Distinct().OrderBy(e => e).ToList();
+            var logEntries = entries as LogEntry[] ?? entries.ToArray();
+            comboBoxLevel.ItemsSource = (from e in logEntries select e.Level).Distinct().ToList();
+            comboBoxUserName.ItemsSource = (from e in logEntries select e.UserName).Distinct().OrderBy(e => e).ToList();
+            comboBoxThread.ItemsSource = (from e in logEntries select e.Thread).Distinct().OrderBy(e => e).ToList();
+            comboBoxMachineName.ItemsSource = (from e in logEntries select e.MachineName).Distinct().OrderBy(e => e).ToList();
+            comboBoxHostName.ItemsSource = (from e in logEntries select e.HostName).Distinct().OrderBy(e => e).ToList();
+            comboBoxApplication.ItemsSource = (from e in logEntries select e.App).Distinct().OrderBy(e => e).ToList();
+            comboBoxClass.ItemsSource = (from e in logEntries select e.Class).Distinct().OrderBy(e => e).ToList();
+            comboBoxMethod.ItemsSource = (from e in logEntries select e.Method).Distinct().OrderBy(e => e).ToList();
+            comboBoxFile.ItemsSource = (from e in logEntries select e.File).Distinct().OrderBy(e => e).ToList();
+            comboLogFile.ItemsSource = (from e in logEntries select e.LogFile).Distinct().OrderBy(e => e).ToList();
+            comboLogger.ItemsSource = (from e in logEntries select e.Logger).Distinct().OrderBy(e => e).ToList();
 
             //comboBoxNDC.ItemsSource = (from e in entries select e.NDC).Distinct().OrderBy(e => e).ToList();
-            comboBoxIdentity.ItemsSource = (from e in entries select e.Identity).Distinct().OrderBy(e => e).ToList();
+            comboBoxIdentity.ItemsSource = (from e in logEntries select e.Identity).Distinct().OrderBy(e => e).ToList();
         }
 
         private void buttonClear_Click(object sender, RoutedEventArgs e)
         {
-            logFilter.Clear();
+            _logFilter.Clear();
 
             this.textBoxMessage.Text = string.Empty;
             this.textBoxThrowable.Text = string.Empty;

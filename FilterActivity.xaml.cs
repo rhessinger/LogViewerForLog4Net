@@ -71,7 +71,7 @@ namespace LogViewer
             VisualStateManager.GoToState(this, "NotFiltered", false);
         }
 
-        private bool filtered;
+        private bool _filtered;
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is filtered.
@@ -81,11 +81,11 @@ namespace LogViewer
         /// </value>
         public bool IsFiltered
         {
-            get { return filtered; }
+            get => _filtered;
             set
             {
-                filtered = value;
-                VisualStateManager.GoToState(this, filtered ? "Filtered" : "NotFiltered", true);
+                _filtered = value;
+                VisualStateManager.GoToState(this, _filtered ? "Filtered" : "NotFiltered", true);
             }
         }
     }

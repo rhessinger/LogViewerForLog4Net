@@ -10,10 +10,9 @@
     SizeToContent="Manual"
     ResizeMode="CanResizeWithGrip" 
     AllowDrop="True"
-    Background="{DynamicResource WindowBackgroundBrush}"
     DataContext="{Binding RelativeSource={RelativeSource Self}}" Closed="window_Closed" WindowStartupLocation="CenterScreen" WindowState="Maximized">
 	<Window.Resources>
-		<Color x:Key="LabelColor">#FFC3C9E9</Color>
+		<Color x:Key="LabelColor">#788DFF</Color>
 	</Window.Resources>
 	<Window.CommandBindings>
 		<CommandBinding Command="ApplicationCommands.Open" CanExecute="openCanExecute" Executed="openExecuted"/>
@@ -34,7 +33,7 @@
 					<ColumnDefinition/>
 				</Grid.ColumnDefinitions>
 				<Menu Grid.Column="0" x:Name="menu1">
-					<MenuItem Header="_File" Foreground="White" >
+					<MenuItem Header="_File" >
 						<MenuItem Header="_Open" Command="ApplicationCommands.Open" />
 						<MenuItem Header="_Recent Files" >
 							<local:RecentFileList x:Name="RecentFileList" />
@@ -44,9 +43,9 @@
 						<Separator />
 						<MenuItem x:Name="ResetSeparator" Header="_Reset separator" Click="resetSeparator_Click" />
 					</MenuItem>
-					<MenuItem Header="_Refresh" Foreground="White" Command="NavigationCommands.Refresh" />
-					<MenuItem Header="F_ilter" Foreground="White" Command="NavigationCommands.Search"  />
-					<MenuItem Header="_About" Foreground="White" Command="ApplicationCommands.Help"  />
+					<MenuItem Header="_Refresh" Command="NavigationCommands.Refresh" />
+					<MenuItem Header="F_ilter"  Command="NavigationCommands.Search"  />
+					<MenuItem Header="_About" Command="ApplicationCommands.Help"  />
 				</Menu>
 			</Grid>
 			<Grid x:Name="gridTopBar" Grid.Row="1" Height="32">
@@ -66,7 +65,7 @@
 						</TextBlock.Foreground>
 					</TextBlock>
 					<TextBlock x:Name="textboxFileName"
-            			Foreground="Orange"
+            			Foreground="#0002FF"
             			Background="Transparent"                       
             			VerticalAlignment="Center" 
             			TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Grid.Column="1"/>
@@ -283,8 +282,8 @@
 			<GridSplitter x:Name="gridSplitter1" Grid.Row="1" Height="8" HorizontalAlignment="Stretch" ResizeDirection="Rows" >
 				<GridSplitter.Background>
 					<RadialGradientBrush>
-						<GradientStop Color="#FF4E4E4E" Offset="1"/>
-						<GradientStop Color="#FFB2B2B2"/>
+						<GradientStop Color="#FCC000" Offset="1"/>
+						<GradientStop Color="#FFAB00"/>
 					</RadialGradientBrush>
 				</GridSplitter.Background>
 			</GridSplitter>

@@ -6,13 +6,13 @@ using System.Resources;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("LogViewer")]
+[assembly: AssemblyTitle("Log4Net Viewer For Windows Store")]
 [assembly: AssemblyDescription("Log4Net XML Log Viewer")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("E-Naxos")]
 [assembly: AssemblyProduct("LogViewer")]
 [assembly: AssemblyCopyright("Original code Ken C. Len / Enhanced Version Olivier Dahan")]
-[assembly: AssemblyTrademark("http://yourlog4netviewer.codeplex.com/")]
+[assembly: AssemblyTrademark("https://github.com/odahan/LogViewerForLog4Net")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -50,6 +50,8 @@ using System.Resources;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.7.5.0")]
-[assembly: AssemblyFileVersion("2.7.5.0")]
+[assembly: AssemblyVersion("3.0.0.0")]
+[assembly: AssemblyFileVersion("3.0.0.0")]
 [assembly: NeutralResourcesLanguageAttribute("en-US")]
+[assembly: Guid("C237D3F9-67E5-4D8D-9056-A9248F66558B")]
+

@@ -75,7 +75,6 @@ using System.Windows.Threading;
 using System.ComponentModel;
 using System.Windows.Interop;
 using System.Reflection;
-using WPF.Themes;
 using log4net;
 using log4net.Config;
 using System.Text;
@@ -92,35 +91,35 @@ namespace LogViewer
     {
 
 
-        private string fileName = string.Empty;
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private string _fileName = string.Empty;
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         /// <summary>
         /// Gets or sets the name of the file.
         /// </summary>
         /// <value>The name of the file.</value>
         public string FileName
         {
-            get { return fileName; }
+            get => _fileName;
             set
             {
-                fileName = value;
+                _fileName = value;
                 RecentFileList.InsertFile(value);
-                notifyPropertyChanged("FileName");
+                notifyPropertyChanged(nameof(FileName));
             }
         }
 
-        private List<LogEntry> entries = new List<LogEntry>();
+        private List<LogEntry> _entries = new List<LogEntry>();
         /// <summary>
         /// Gets or sets the entries.
         /// </summary>
         /// <value>The entries.</value>
         public List<LogEntry> Entries
         {
-            get { return entries; }
+            get => _entries;
             set
             {
-                entries = value;
-                notifyPropertyChanged("Entries");
+                _entries = value;
+                notifyPropertyChanged(nameof(Entries));
             }
         }
 
@@ -132,54 +131,52 @@ namespace LogViewer
         {
             //Enabling Log4Net logging
             XmlConfigurator.Configure();
-            if (log.IsInfoEnabled) log.Info("Application [Log4Viewer] Start");
+            if (Log.IsInfoEnabled) Log.Info("Application [Log4Viewer] Start");
 #if DEBUG   // OD - this info can be interesting when debugging a log coming from someone else.
-            log.Debug("Application running in Debug mode");
+            Log.Debug("Application running in Debug mode");
 #endif
-            log.Info("initializing windows components");
+            Log.Info("initializing windows components");
             InitializeComponent();
             Loaded += window1_Loaded;
-            log.Info("Setting default width to " + Properties.Settings.Default.AppWidth);
+            Log.Info("Setting default width to " + Properties.Settings.Default.AppWidth);
             Width = Properties.Settings.Default.AppWidth;
-            log.Info("Setting default height to " + Properties.Settings.Default.AppHeight);
+            Log.Info("Setting default height to " + Properties.Settings.Default.AppHeight);
             Height = Properties.Settings.Default.AppHeight;
-            log.Info("Setting default Grid Height to " + Properties.Settings.Default.Split);
+            Log.Info("Setting default Grid Height to " + Properties.Settings.Default.Split);
             MainGrid.RowDefinitions[0].Height = new GridLength(Properties.Settings.Default.Split);
 
         }
 
         private void window1_Loaded(object sender, RoutedEventArgs e)
         {
-            log.Info("Setting the UI Culture to fr-FR");
+            Log.Info("Setting the UI Culture to fr-FR");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("fr-FR");
             //log.Info("Setting Max Width to " + SystemParameters.PrimaryScreenWidth);
             //MaxWidth = SystemParameters.PrimaryScreenWidth;
-            log.Info("Initializing event handler for ListView control");
+            Log.Info("Initializing event handler for ListView control");
             listView1.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(listView1_HeaderClicked));
-            log.Info("Setting the RecentFileList to" + Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)));
+            Log.Info("Setting the RecentFileList to" + Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)));
             RecentFileList.UseXmlPersister(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "YourLog4NetViewer"));
             //RecentFileList.UseXmlPersister(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "EnaxosLogViewer.filehistory.xml"));
-            log.Info("Initializing the RecentFiles menu click");
+            Log.Info("Initializing the RecentFiles menu click");
             RecentFileList.MenuClick += (s, ee) => openFile(ee.FilePath);
-            log.Info("Initializing Error Bitmap");
+            Log.Info("Initializing Error Bitmap");
             imageError.Source = Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Error.Handle, Int32Rect.Empty, null);
-            log.Info("Initializing Info Bitmap");
+            Log.Info("Initializing Info Bitmap");
             imageInfo.Source = Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Information.Handle, Int32Rect.Empty, null);
-            log.Info("Initializing Warn  Bitmap");
+            Log.Info("Initializing Warn  Bitmap");
             imageWarn.Source = Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Warning.Handle, Int32Rect.Empty, null);
-            log.Info("Initializing Debug Bitmap");
+            Log.Info("Initializing Debug Bitmap");
             imageDebug.Source = Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Question.Handle, Int32Rect.Empty, null);
 			Title = string.Format(Properties.Resources.WindowTitle + (!string.IsNullOrWhiteSpace(FileName) ? " - " + FileName : string.Empty), Assembly.GetExecutingAssembly().GetName().Version);
-            log.Info("Setting the title as " + Title);
-            log.Info("Applying ExpressionDark Theme");
-            this.ApplyTheme("ExpressionDark");
-            log.Info("Setting the GridView widths for each column");
+            Log.Info("Setting the title as " + Title);
+            Log.Info("Setting the GridView widths for each column");
             foreach (var gvc in GridView1.Columns)
             {
                 gvc.Width = gvc.ActualWidth;
                 gvc.Width = Double.NaN;
             }
-			mergedFiles.ForEach(mergedFile => RecentFileList.InsertFile(mergedFile));
+			_mergedFiles.ForEach(mergedFile => RecentFileList.InsertFile(mergedFile));
         }
 
         /// <summary>
@@ -187,7 +184,7 @@ namespace LogViewer
         /// </summary>
         private void clear()
         {
-            log.Info("Clearing all the text controls");
+            Log.Info("Clearing all the text controls");
             textBoxLevel.Text = string.Empty;
             textBoxTimeStamp.Text = string.Empty;
             textBoxMachineName.Text = string.Empty;
@@ -214,13 +211,13 @@ namespace LogViewer
         /// <param name="logFileName">Name of the file.</param>
         private void openFile(string logFileName)
         {
-            log.Info("Clearing Merged Files");
-            mergedFiles.Clear();
-            log.Info("Loading file " + logFileName);
+            Log.Info("Clearing Merged Files");
+            _mergedFiles.Clear();
+            Log.Info("Loading file " + logFileName);
             loadFile(logFileName);
         }
 
-        private readonly List<string> mergedFiles = new List<string>();
+        private readonly List<string> _mergedFiles = new List<string>();
 
         /// <summary>
         /// Loads the file.
@@ -229,53 +226,53 @@ namespace LogViewer
         {
             if (!withMerge)
             {
-                log.Info("Clearing entries to load single log file");
-                entries.Clear();
-                log.Info("Notifying Entries property as changed");
+                Log.Info("Clearing entries to load single log file");
+                _entries.Clear();
+                Log.Info("Notifying Entries property as changed");
                 notifyPropertyChanged("Entries");
-                log.Info("Resetting the ListView item source to nothing");
+                Log.Info("Resetting the ListView item source to nothing");
                 listView1.ItemsSource = null;
                 FileName = logFileName;
             }
             else
             {
-                log.Info("Adding the log files that need to be merged to mergedFile object");
-                if (mergedFiles.Count == 0) mergedFiles.Add(FileName);
-                log.Info("If the same file is being added then return immediately");
-                if (mergedFiles.Contains(logFileName)) return;
-                log.Info("If not add the file to the merged list");
-                mergedFiles.Add(logFileName);
+                Log.Info("Adding the log files that need to be merged to mergedFile object");
+                if (_mergedFiles.Count == 0) _mergedFiles.Add(FileName);
+                Log.Info("If the same file is being added then return immediately");
+                if (_mergedFiles.Contains(logFileName)) return;
+                Log.Info("If not add the file to the merged list");
+                _mergedFiles.Add(logFileName);
             }
 
-			log.Info("Clearing the log filter");
+			Log.Info("Clearing the log filter");
             logFilter.Clear();
-            log.Info("Turning off the IsFiltered property of the FilterIndicator");
+            Log.Info("Turning off the IsFiltered property of the FilterIndicator");
             FilterIndicator.IsFiltered = false;
 
             var dt = new DateTime(1970, 1, 1, 0, 0, 0, 0);
             var iIndex = 1;
-            if (withMerge) iIndex = entries.Count + 1;
+            if (withMerge) iIndex = _entries.Count + 1;
 
             clear();
 
             try
             {
-                log.Info("Initializing FileStream objet to open the log file");
+                Log.Info("Initializing FileStream objet to open the log file");
                 var oFileStream = new FileStream(logFileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite);
-                log.Info("Initializing a Stream Reader");
+                Log.Info("Initializing a Stream Reader");
                 var oStreamReader = new StreamReader(oFileStream);
-                log.Info("Read all the contents in the log file to a StreamReader");
+                Log.Info("Read all the contents in the log file to a StreamReader");
                 var sBuffer = string.Format("<root>{0}</root>", oStreamReader.ReadToEnd());
-                log.Info("Closing StreamReader and FileStream object");
+                Log.Info("Closing StreamReader and FileStream object");
                 oStreamReader.Close();
                 oFileStream.Close();
 
                 #region Read File Buffer
                 ////////////////////////////////////////////////////////////////////////////////
-                log.Info("Reading File");
+                Log.Info("Reading File");
                 var oStringReader = new StringReader(sBuffer);
                 var oXmlTextReader = new XmlTextReader(oStringReader) { Namespaces = false };
-                log.Info("Start reading the log file");
+                Log.Info("Start reading the log file");
                 while (oXmlTextReader.Read())
                 {
                     if ((oXmlTextReader.NodeType != XmlNodeType.Element) || (oXmlTextReader.Name != "log4j:event"))
@@ -373,7 +370,7 @@ namespace LogViewer
                                                     }
                                                 case ("NDC"):
                                                     {
-                                                        logentry.NDC = oXmlTextReader.GetAttribute("value");
+                                                        logentry.Ndc = oXmlTextReader.GetAttribute("value");
                                                         break;
                                                     }
                                                 case ("log4japp"):
@@ -407,11 +404,11 @@ namespace LogViewer
                     ////////////////////////////////////////////////////////////////////////////////
                     #endregion
 
-                    entries.Add(logentry);
+                    _entries.Add(logentry);
                     iIndex++;
                 }
                 notifyPropertyChanged("Entries");
-                log.Info("Completing of Log xml reading");
+                Log.Info("Completing of Log xml reading");
                 ////////////////////////////////////////////////////////////////////////////////
                 #endregion
             }
@@ -422,7 +419,7 @@ namespace LogViewer
 
             #region Show Counts
             ////////////////////////////////////////////////////////////////////////////////
-            log.Info("Calculating the number of ERROR in the log file");
+            Log.Info("Calculating the number of ERROR in the log file");
             var errorCount =
                 (
                     from entry in Entries
@@ -441,8 +438,8 @@ namespace LogViewer
                 labelErrorCount.Visibility = Visibility.Hidden;
                 imageError.Visibility = Visibility.Hidden;
             }
-            log.Info("ERROR count is " + errorCount);
-            log.Info("Calculating the number of INFO in the log file");
+            Log.Info("ERROR count is " + errorCount);
+            Log.Info("Calculating the number of INFO in the log file");
             var infoCount =
                 (
                     from entry in Entries
@@ -461,8 +458,8 @@ namespace LogViewer
                 labelInfoCount.Visibility = Visibility.Hidden;
                 imageInfo.Visibility = Visibility.Hidden;
             }
-            log.Info("INFO count is " + infoCount);
-            log.Info("Calculating the number of WARN in the log file");
+            Log.Info("INFO count is " + infoCount);
+            Log.Info("Calculating the number of WARN in the log file");
             var warnCount =
                 (
                     from entry in Entries
@@ -481,8 +478,8 @@ namespace LogViewer
                 labelWarnCount.Visibility = Visibility.Hidden;
                 imageWarn.Visibility = Visibility.Hidden;
             }
-            log.Info("WARN count is " + warnCount);
-            log.Info("Calculating the number of DEBUG in the log file");
+            Log.Info("WARN count is " + warnCount);
+            Log.Info("Calculating the number of DEBUG in the log file");
             var debugCount =
                 (
                     from entry in Entries
@@ -501,29 +498,29 @@ namespace LogViewer
                 imageDebug.Visibility = Visibility.Hidden;
                 labelDebugCount.Visibility = Visibility.Hidden;
             }
-            log.Info("DEBUG count is " + debugCount);
+            Log.Info("DEBUG count is " + debugCount);
             tbFiltered.Text = Entries.Count().ToString();
             FilterIndicator.IsFiltered = false;
 
             ////////////////////////////////////////////////////////////////////////////////
             #endregion
-            log.Info("Initializing ListView to show the log entries");
+            Log.Info("Initializing ListView to show the log entries");
             listView1.ItemsSource = null;
-            log.Info("Loading ListView with Log Entries");
-            listView1.ItemsSource = (from e in entries orderby e.TimeStamp select e).ToList();
-            log.Info("Clearing Sort Adorner");
+            Log.Info("Loading ListView with Log Entries");
+            listView1.ItemsSource = (from e in _entries orderby e.TimeStamp select e).ToList();
+            Log.Info("Clearing Sort Adorner");
             clearSortAdorner();
 
             if (!withMerge)
             {
 				textboxFileName.Text = logFileName;
 				Title = string.Format(Properties.Resources.WindowTitle + " - " + logFileName, Assembly.GetExecutingAssembly().GetName().Version);
-				log.Info("Setting the title as " + Title);
+				Log.Info("Setting the title as " + Title);
                 return;
             }
 
             var s = "";
-            foreach (var sm in mergedFiles)
+            foreach (var sm in _mergedFiles)
             {
                 if (s != "") s += "; ";
                 s += Path.GetFileName(sm);
@@ -531,20 +528,20 @@ namespace LogViewer
 
             textboxFileName.Text = s;
 			Title = string.Format(Properties.Resources.WindowTitle + " - " + s, Assembly.GetExecutingAssembly().GetName().Version);
-			log.Info("Setting the title as " + Title);
+			Log.Info("Setting the title as " + Title);
         }
 
         #region ListView Events
         ////////////////////////////////////////////////////////////////////////////////
         private void listView1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            log.Info("Inside ListView selection changed and clearing the text controls");
+            Log.Info("Inside ListView selection changed and clearing the text controls");
             clear();
-            log.Info("Getting the current Log Entry");
+            Log.Info("Getting the current Log Entry");
 
             if (listView1.SelectedItems.Count == 1)
             {
-                log.Info("Show the selected log entry on the UI");
+                Log.Info("Show the selected log entry on the UI");
 
                 var logentry = listView1.SelectedItem as LogEntry;
 
@@ -569,11 +566,11 @@ namespace LogViewer
                 textBoxLogger.Text = logentry.Logger;
 
                 textBoxIdentity.Text = logentry.Identity;
-                textBoxNDC.Text = logentry.NDC;
+                textBoxNDC.Text = logentry.Ndc;
             }
             else if (listView1.SelectedItems.Count > 1)
             {
-                log.Info("Show the selected log entries on the UI");
+                Log.Info("Show the selected log entries on the UI");
 
                 foreach (LogEntry logEntry in listView1.SelectedItems)
                 {
@@ -602,7 +599,7 @@ namespace LogViewer
         /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
         private void listView1_HeaderClicked(object sender, RoutedEventArgs e)
         {
-            log.Info("Handles the HeaderClicked event of the ListView control");
+            Log.Info("Handles the HeaderClicked event of the ListView control");
             var header = e.OriginalSource as GridViewColumnHeader;
 
             if (header == null)
@@ -612,22 +609,22 @@ namespace LogViewer
             if (source == null) return;
             var dataView = CollectionViewSource.GetDefaultView(source.ItemsSource);
             if (dataView == null) return;
-            log.Info("Clearing all Sort Descriptions");
+            Log.Info("Clearing all Sort Descriptions");
             dataView.SortDescriptions.Clear();
-            log.Info("Determining the Sort direction");
+            Log.Info("Determining the Sort direction");
             direction = direction == ListSortDirection.Ascending ? ListSortDirection.Descending : ListSortDirection.Ascending;
             if (header != null && header.Content != null)
             {
                 if (header.Content.ToString() != "")
                 {
                     var description = new SortDescription(header.Content.ToString(), direction);
-                    log.Info("Adding sort description from header content");
+                    Log.Info("Adding sort description from header content");
                     dataView.SortDescriptions.Add(description);
                 }
             }
-            log.Info("Refreshing the data view");
+            Log.Info("Refreshing the data view");
             dataView.Refresh();
-            log.Info("Clearing the Sort Adorner");
+            Log.Info("Clearing the Sort Adorner");
             clearSortAdorner();
             curSortCol = header;
             curAdorner = new SortAdorner(curSortCol, direction);
@@ -638,7 +635,7 @@ namespace LogViewer
         {
             if (curSortCol != null)
             {
-                log.Info("Getting current column and remove the existing sort adorner");
+                Log.Info("Getting current column and remove the existing sort adorner");
                 AdornerLayer.GetAdornerLayer(curSortCol).Remove(curAdorner);
             }
         }
@@ -654,14 +651,14 @@ namespace LogViewer
             {
                 try
                 {
-                    log.Info("Getting  file drop data");
+                    Log.Info("Getting  file drop data");
                     var a = (Array)e.Data.GetData(DataFormats.FileDrop);
-                    log.Info("Getting the Keyboard modifiers for validation");
+                    Log.Info("Getting the Keyboard modifiers for validation");
                     var b = (Keyboard.Modifiers == ModifierKeys.Alt) || (a.Length > 1);
-                    log.Info("Checking if drag drop has data");
+                    Log.Info("Checking if drag drop has data");
                     if (a != null)
                     {
-                        log.Info("Iterating through the array of drag drop data");
+                        Log.Info("Iterating through the array of drag drop data");
                         foreach (var file in a)
                         {
                             var f = file.ToString(); // a.GetValue(0).ToString();
@@ -674,7 +671,7 @@ namespace LogViewer
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Error in Drag Drop", ex);
+                    Log.Error("Error in Drag Drop", ex);
                     MessageBox.Show("Error in Drag Drop: " + ex.Message);
                 }
             }
@@ -687,7 +684,7 @@ namespace LogViewer
         ////////////////////////////////////////////////////////////////////////////////
         private void doMenuFileOpen()
         {
-            log.Info("Initializing the open file dialog object");
+            Log.Info("Initializing the open file dialog object");
             var oOpenFileDialog = new System.Windows.Forms.OpenFileDialog
                                       {
                                           Filter = Properties.Resources.XmlOpenFilter,
@@ -697,12 +694,12 @@ namespace LogViewer
                                       };
             if (oOpenFileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
             FileName = oOpenFileDialog.FileName;
-            log.Info("FileName is " + FileName);
+            Log.Info("FileName is " + FileName);
             for (var i = 0; i < oOpenFileDialog.FileNames.Length; i++)
             {
-                if (log.IsDebugEnabled)
+                if (Log.IsDebugEnabled)
                 {
-                    log.Info("Loading file " + oOpenFileDialog.FileNames[i]);
+                    Log.Info("Loading file " + oOpenFileDialog.FileNames[i]);
                 }
                 loadFile(oOpenFileDialog.FileNames[i], i > 0);
             }
@@ -710,7 +707,7 @@ namespace LogViewer
 
         private void mergeFile_Click(object sender, RoutedEventArgs e)
         {
-            log.Info("Initializing the open file dialog for filer merge click event");
+            Log.Info("Initializing the open file dialog for filer merge click event");
             var oOpenFileDialog = new System.Windows.Forms.OpenFileDialog
                                       {
                                           Filter = Properties.Resources.XmlOpenFilter,
@@ -721,9 +718,9 @@ namespace LogViewer
             if (oOpenFileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
             foreach (var t in oOpenFileDialog.FileNames)
             {
-                if (log.IsDebugEnabled)
+                if (Log.IsDebugEnabled)
                 {
-                    log.Info("Loading file " + t);
+                    Log.Info("Loading file " + t);
                     loadFile(t, true);
                 }
             }
@@ -733,17 +730,17 @@ namespace LogViewer
         {
             if (string.IsNullOrWhiteSpace(FileName))
             {
-                log.Info("Unable to refresh the empty source");
+                Log.Info("Unable to refresh the empty source");
                 MessageBox.Show(Properties.Resources.CantRefreshEmptySource);
                 return;
             }
-            if (mergedFiles.Count > 0)
+            if (_mergedFiles.Count > 0)
             {
-                log.Info("There is no refresh when multiple files are open");
+                Log.Info("There is no refresh when multiple files are open");
                 MessageBox.Show(Properties.Resources.NoRefreshOnMultipleSource);
                 return;
             }
-            log.Info("Loading file " + FileName);
+            Log.Info("Loading file " + FileName);
             loadFile(FileName);
             listView1.SelectedIndex = listView1.Items.Count - 1;
             if (listView1.Items.Count > 4)
@@ -761,9 +758,9 @@ namespace LogViewer
 
         private static void doMenuAbout()
         {
-            log.Info("Initializing about screen");
+            Log.Info("Initializing about screen");
             var about = new About();
-            log.Info("Displaying/Showing about screen");
+            Log.Info("Displaying/Showing about screen");
             about.ShowDialog();
         }
 
@@ -772,21 +769,21 @@ namespace LogViewer
 
         private void doMenuFilter()
         {
-            log.Info("Cloning the log filter");
+            Log.Info("Cloning the log filter");
             var tempFilter = logFilter.Clone();
             var filter = new Filter(Entries, tempFilter) { Owner = this };
-            log.Info("Showing the filter dialog");
+            Log.Info("Showing the filter dialog");
             
             filter.ShowDialog();
 
             if (filter.DialogResult != true)
                 return;
 
-            log.Info("Cloning the log filter again after loading new filters");
+            Log.Info("Cloning the log filter again after loading new filters");
             logFilter = tempFilter.Clone();
             logFilter.TrimAll();
 
-            log.Info("Initializing the query object");
+            Log.Info("Initializing the query object");
             var query = (from e in Entries select e);
 
             if (!string.IsNullOrEmpty(logFilter.App))
@@ -813,19 +810,19 @@ namespace LogViewer
                 query = query.Where(e => e.LogFile.ToUpperInvariant().Contains(logFilter.LogName.ToUpperInvariant()));
             if (!string.IsNullOrEmpty(logFilter.Identity))
                 query = query.Where(e => e.Identity.ToUpperInvariant().Contains(logFilter.Identity.ToUpperInvariant()));
-            if (!string.IsNullOrEmpty(logFilter.NDC))
-                query = query.Where(e => e.NDC.ToUpperInvariant().Contains(logFilter.NDC.ToUpperInvariant()));
+            if (!string.IsNullOrEmpty(logFilter.Ndc))
+                query = query.Where(e => e.Ndc.ToUpperInvariant().Contains(logFilter.Ndc.ToUpperInvariant()));
             if (!string.IsNullOrEmpty(logFilter.Logger))
                 query = query.Where(e => e.Logger.ToUpperInvariant().Contains(logFilter.Logger.ToUpperInvariant()));
 
             // TODO: shouldn't we be showing 0 results if the filter matched 0 results?
             var c = query.Count();
-            log.Info("Received queries " + query.Count());
+            Log.Info("Received queries " + query.Count());
 
             FilterIndicator.IsFiltered = query.Any() && (c != Entries.Count());
             
             logFilter.IsFiltered = FilterIndicator.IsFiltered;
-            log.Info("Log Filter status " + logFilter.IsFiltered);
+            Log.Info("Log Filter status " + logFilter.IsFiltered);
 
             LogFilter.FilteredEntries = FilterIndicator.IsFiltered ? query.ToList() : Entries;
             listView1.ItemsSource = logFilter.IsFiltered ? LogFilter.FilteredEntries : Entries;
@@ -834,12 +831,12 @@ namespace LogViewer
 
         private void cancelFilter()
         {
-            log.Info("Clearing Log Filter");
+            Log.Info("Clearing Log Filter");
             logFilter.Clear();
             FilterIndicator.IsFiltered = false;
             LogFilter.FilteredEntries = Entries;
-            listView1.ItemsSource = entries;
-            tbFiltered.Text = entries.Count().ToString();
+            listView1.ItemsSource = _entries;
+            tbFiltered.Text = _entries.Count().ToString();
         }
 
         private void filterIndicator_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -853,7 +850,7 @@ namespace LogViewer
         private void quickFilter(MessageLevel level)
         {
             string s;
-            log.Info("Using quick filter for " + level);
+            Log.Info("Using quick filter for " + level);
             switch (level)
             {
                 case MessageLevel.Error:
@@ -875,7 +872,7 @@ namespace LogViewer
             logFilter.Level = s;
             logFilter.TrimAll();
 
-            log.Info("Initializing the query objet for " + level);
+            Log.Info("Initializing the query objet for " + level);
             var query = (from e in Entries select e);
             if (!string.IsNullOrWhiteSpace(logFilter.Level)) query = query.Where(e => e.Level == logFilter.Level);
 
@@ -890,25 +887,25 @@ namespace LogViewer
 
         private void imageError_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            log.Info("Enabling Quick filter for ERROR message level");
+            Log.Info("Enabling Quick filter for ERROR message level");
             quickFilter(MessageLevel.Error);
         }
 
         private void imageInfo_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            log.Info("Enabling Quick filter for INFO message level");
+            Log.Info("Enabling Quick filter for INFO message level");
             quickFilter(MessageLevel.Info);
         }
 
         private void imageWarn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            log.Info("Enabling Quick filter for WARN message level");
+            Log.Info("Enabling Quick filter for WARN message level");
             quickFilter(MessageLevel.Warning);
         }
 
         private void imageDebug_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            log.Info("Enabling Quick filter for DEBUG message level");
+            Log.Info("Enabling Quick filter for DEBUG message level");
             quickFilter(MessageLevel.Debug);
         }
 
@@ -916,7 +913,7 @@ namespace LogViewer
         private void find(int loopDirection)
         {
             if (textBoxFind.Text.Length <= 0) return;
-            log.Info("Finding in Loop Direction " + loopDirection);
+            Log.Info("Finding in Loop Direction " + loopDirection);
             if (loopDirection == 0)
             {
                 for (var i = currentIndex + 1; i < listView1.Items.Count; i++)
@@ -960,13 +957,13 @@ namespace LogViewer
 
         private void buttonFindNext_Click(object sender, RoutedEventArgs e)
         {
-            log.Info("Triggering find next");
+            Log.Info("Triggering find next");
             find(0);
         }
 
         private void buttonFindPrevious_Click(object sender, RoutedEventArgs e)
         {
-            log.Info("Triggering find previous");
+            Log.Info("Triggering find previous");
             find(1);
         }
 
@@ -997,10 +994,7 @@ namespace LogViewer
         /// Gets a value indicating whether this instance can merge.
         /// </summary>
         /// <value><c>true</c> if this instance can merge; otherwise, <c>false</c>.</value>
-        public bool CanMerge
-        {
-            get { return entries != null && entries.Count() > 0; }
-        }
+        public bool CanMerge => _entries != null && _entries.Any();
 
         /// <summary>
         /// Occurs when a property value changes.
@@ -1017,7 +1011,7 @@ namespace LogViewer
         private void label6b_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             LogEntry.JustFileName = !LogEntry.JustFileName;
-            log.Info("log entry file name on label6b mouse double click " + LogEntry.JustFileName);
+            Log.Info("log entry file name on label6b mouse double click " + LogEntry.JustFileName);
             listView1_SelectionChanged(this, null);
         }
 
@@ -1030,7 +1024,7 @@ namespace LogViewer
 
         private void openExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            log.Info("Executing menu file open");
+            Log.Info("Executing menu file open");
             doMenuFileOpen();
         }
 
@@ -1046,25 +1040,25 @@ namespace LogViewer
 
         private void refreshCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = !(string.IsNullOrWhiteSpace(FileName) || (mergedFiles.Count > 0));
-            log.Info("Can Refresh execute " + e.CanExecute);
+            e.CanExecute = !(string.IsNullOrWhiteSpace(FileName) || (_mergedFiles.Count > 0));
+            Log.Info("Can Refresh execute " + e.CanExecute);
         }
 
         private void refreshExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            log.Info("Execute menu refresh");
+            Log.Info("Execute menu refresh");
             doMenuRefresh();
         }
 
         private void filterCanExexute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = !string.IsNullOrWhiteSpace(FileName) || mergedFiles.Count > 0;
-            log.Info("Can filter execute " + e.CanExecute);
+            e.CanExecute = !string.IsNullOrWhiteSpace(FileName) || _mergedFiles.Count > 0;
+            Log.Info("Can filter execute " + e.CanExecute);
         }
 
         private void filterExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            log.Info("Do menu filter");
+            Log.Info("Do menu filter");
             doMenuFilter();
         }
 
@@ -1075,14 +1069,14 @@ namespace LogViewer
 
         private void aboutExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            log.Info("Executing about menu");
+            Log.Info("Executing about menu");
             doMenuAbout();
         }
         #endregion
 
         private void window_Closed(object sender, EventArgs e)
         {
-            log.Info("Saving default application width,height,split to open next time");
+            Log.Info("Saving default application width,height,split to open next time");
             Properties.Settings.Default.AppWidth = Width;
             Properties.Settings.Default.AppHeight = Height;
             Properties.Settings.Default.Split = MainGrid.RowDefinitions[0].Height.Value;
@@ -1091,7 +1085,7 @@ namespace LogViewer
 
         private void resetSeparator_Click(object sender, RoutedEventArgs e)
         {
-            log.Info("Defining the height when reset reset separator is clicked");
+            Log.Info("Defining the height when reset reset separator is clicked");
             MainGrid.RowDefinitions[0].Height = new GridLength(ActualHeight / 3);
         }
     }

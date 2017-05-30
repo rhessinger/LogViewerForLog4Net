@@ -54,7 +54,6 @@
 
 #endregion
 
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -63,18 +62,18 @@ using log4net;
 
 namespace LogViewer
 {
-	/// <summary>
-	/// Interaction logic for App.xaml
-	/// </summary>
-	public partial class App : Application
+    /// <summary>
+    /// Interaction logic for App.xaml
+    /// </summary>
+    public partial class App : Application
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private string[] _filesToLoad;
 
 		protected override void OnStartup(StartupEventArgs e)
 		{
 			base.OnStartup(e);
-			log.DebugFormat("Arguments passed to the application: {0}", string.Join(", ", e.Args));
+			Log.DebugFormat("Arguments passed to the application: {0}", string.Join(", ", e.Args));
 			_filesToLoad = e.Args;
 		}
 
@@ -88,10 +87,10 @@ namespace LogViewer
 			for (var i = 0; i < files.Count; i++)
 			{
 				var file = files[i];
-				log.DebugFormat("Merging file: \"{0}\"", file.FullName);
-				log.DebugFormat("File Path: \"{0}\"", file.Directory);
-				log.DebugFormat("File Name: \"{0}\"", file.Name);
-				log.DebugFormat("File Extension: \"{0}\"", file.Extension);
+				Log.DebugFormat("Merging file: \"{0}\"", file.FullName);
+				Log.DebugFormat("File Path: \"{0}\"", file.Directory);
+				Log.DebugFormat("File Name: \"{0}\"", file.Name);
+				Log.DebugFormat("File Extension: \"{0}\"", file.Extension);
 				window.loadFile(file.FullName, i > 0);
 			}
 			_filesToLoad = new string[0];

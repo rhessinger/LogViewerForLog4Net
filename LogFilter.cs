@@ -105,7 +105,7 @@ namespace LogViewer
         /// Gets or sets the name of the user.
         /// </summary>
         /// <value>The name of the user.</value>
-        public string NDC { get; set; }
+        public string Ndc { get; set; }
         /// <summary>
         /// Gets or sets the name of the host.
         /// </summary>
@@ -194,7 +194,7 @@ namespace LogViewer
             LogName = string.Empty;
             FilteredEntries = null;
             Identity = string.Empty;
-            NDC = string.Empty;
+            Ndc = string.Empty;
             Logger = string.Empty;
         }
 
@@ -203,22 +203,22 @@ namespace LogViewer
         /// </summary>
         public void TrimAll()
         {
-            File = File == null ? string.Empty : File.Trim();
-            Method = Method == null ? string.Empty : Method.Trim();
-            Class = Class == null ? string.Empty : Class.Trim();
+            File = File?.Trim() ?? string.Empty;
+            Method = Method?.Trim() ?? string.Empty;
+            Class = Class?.Trim() ?? string.Empty;
             Throwable = Throwable.Trim();
-            App = App == null ? string.Empty : App.Trim();
-            HostName = HostName == null ? string.Empty : HostName.Trim();
-            UserName = UserName == null ? string.Empty : UserName.Trim();
-            MachineName = MachineName == null ? string.Empty : MachineName.Trim();
+            App = App?.Trim() ?? string.Empty;
+            HostName = HostName?.Trim() ?? string.Empty;
+            UserName = UserName?.Trim() ?? string.Empty;
+            MachineName = MachineName?.Trim() ?? string.Empty;
             Message = Message.Trim();
-            Thread = Thread == null ? string.Empty : Thread.Trim();
-            Level = Level == null ? string.Empty : Level.Trim();
-            LogName = LogName == null ? string.Empty : LogName.Trim();
+            Thread = Thread?.Trim() ?? string.Empty;
+            Level = Level?.Trim() ?? string.Empty;
+            LogName = LogName?.Trim() ?? string.Empty;
             Line = Line.Trim();
-            Identity = Identity == null ? string.Empty : Identity.Trim();
-            NDC = NDC == null ? string.Empty : NDC.Trim();
-            Logger = Logger == null ? string.Empty : Logger.Trim();
+            Identity = Identity?.Trim() ?? string.Empty;
+            Ndc = Ndc?.Trim() ?? string.Empty;
+            Logger = Logger?.Trim() ?? string.Empty;
         }
 
     }

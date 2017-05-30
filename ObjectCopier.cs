@@ -69,7 +69,7 @@ namespace LogViewer
         /// Perform a deep Copy of the object. 
         /// </summary>
         /// <returns>The copied object.</returns> 
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Clones the specified source.
@@ -83,22 +83,22 @@ namespace LogViewer
             if (!typeof(T).IsSerializable)
             {
                 const string s = "Type must be serializable";
-                log.Error(s);
-                throw new ArgumentException(s, "source");
+                Log.Error(s);
+                throw new ArgumentException(s, nameof(source));
             }
 
             // Don't serialize a null object, simply return the default for that object 
-            log.Info("Don't serialize a null object, simply return the default for that object ");
+            Log.Info("Don't serialize a null object, simply return the default for that object ");
             if (ReferenceEquals(source, null))
             {
                 return default(T);
             }
 
-            log.Info("Initializing IFormatter object based on BinaryFormatter");
+            Log.Info("Initializing IFormatter object based on BinaryFormatter");
             IFormatter formatter = new BinaryFormatter();
-            log.Info("Initializing Memory Stream");
+            Log.Info("Initializing Memory Stream");
             Stream stream = new MemoryStream();
-            log.Info("Using the stream object to format the serialized data");
+            Log.Info("Using the stream object to format the serialized data");
             using (stream)
             {
                 formatter.Serialize(stream, source);

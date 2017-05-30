@@ -66,10 +66,10 @@ namespace LogViewer
     /// </summary>
     public class SortAdorner : Adorner
     {
-        private readonly static Geometry ascGeometry =
+        private static readonly Geometry AscGeometry =
             Geometry.Parse("M 0,0 L 10,0 L 5,5 Z");
 
-        private readonly static Geometry descGeometry =
+        private static readonly Geometry DescGeometry =
             Geometry.Parse("M 0,5 L 10,5 L 5,0 Z");
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace LogViewer
             drawingContext.DrawGeometry(Brushes.Red, null,
 // ReSharper restore AssignNullToNotNullAttribute
                 Direction == ListSortDirection.Ascending ?
-                  ascGeometry : descGeometry);
+                  AscGeometry : DescGeometry);
 
             drawingContext.Pop();
         }

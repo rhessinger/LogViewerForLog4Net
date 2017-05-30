@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,12 +10,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LogViewer</RootNamespace>
     <AssemblyName>LogViewer</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>false</SignAssembly>
-    <AssemblyOriginatorKeyFile>LogViewer.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
     <ExpressionBlendVersion>4.0.20421.0</ExpressionBlendVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -58,6 +59,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -67,6 +69,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>LogViewer.ico</ApplicationIcon>
@@ -75,11 +78,8 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LibZ.Bootstrap">
-      <HintPath>packages\LibZ.Bootstrap.1.1.0.2\lib\net40-client\LibZ.Bootstrap.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net">
-      <HintPath>packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Effects">
       <HintPath>packages\Microsoft.Expression.Blend.SDK.WPF.4.0.0\lib\net40\Microsoft.Expression.Effects.dll</HintPath>
@@ -90,6 +90,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -120,10 +121,6 @@
     </Reference>
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="WPF.Themes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=e18aa4b8ef9c8898, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libs\WPF.Themes.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -201,7 +198,6 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="LogViewer.pfx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -236,8 +232,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Libs\WPF.Themes.dll" />
-    <Content Include="Libs\WPF.Themes.pdb" />
     <Resource Include="LogViewer.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -247,7 +241,7 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-	  <PostBuildEvent>
+    <PostBuildEvent>
 		  "$(SolutionDir)\packages\LibZ.Bootstrap.1.1.0.2\tools\libz.exe " inject-dll -a "$(TargetDir)LogViewer.exe" -i *.dll --move
 		  "$(SolutionDir)\packages\LibZ.Bootstrap.1.1.0.2\tools\libz.exe " inject-dll -a "$(TargetDir)LogViewer.exe" -i de\\*.dll --move
 		  "$(SolutionDir)\packages\LibZ.Bootstrap.1.1.0.2\tools\libz.exe " inject-dll -a "$(TargetDir)LogViewer.exe" -i en\\*.dll --move
@@ -259,7 +253,6 @@
 		  "$(SolutionDir)\packages\LibZ.Bootstrap.1.1.0.2\tools\libz.exe " inject-dll -a "$(TargetDir)LogViewer.exe" -i zh-Hans\\*.dll --move
 		  "$(SolutionDir)\packages\LibZ.Bootstrap.1.1.0.2\tools\libz.exe " inject-dll -a "$(TargetDir)LogViewer.exe" -i zh-Hant\\*.dll --move
 	  </PostBuildEvent>
-	  
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -70,7 +70,7 @@ namespace LogViewer
     [Serializable]
     public class LogEntry
     {
-        private static readonly Dictionary<LogImageType, BitmapSource> imageList =
+        private static readonly Dictionary<LogImageType, BitmapSource> ImageList =
             new Dictionary<LogImageType, BitmapSource>
                 {
                 {LogImageType.Debug, Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Question.Handle, Int32Rect.Empty, null)},
@@ -88,7 +88,7 @@ namespace LogViewer
         /// <returns></returns>
         public static BitmapSource Images(LogImageType type)
         {
-            return imageList[type];
+            return ImageList[type];
         }
 
         /// <summary>
@@ -97,220 +97,136 @@ namespace LogViewer
         /// <value>The item.</value>
         public int Item { get; set; }
 
-        private DateTime timeStamp = new DateTime(1970, 1, 1, 0, 0, 0, 0);
         /// <summary>
         /// Gets or sets the time stamp.
         /// </summary>
         /// <value>The time stamp.</value>
-        public DateTime TimeStamp
-        {
-            get { return timeStamp; }
-            set { timeStamp = value; }
-        }
+        public DateTime TimeStamp { get; set; } = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+        
 
-        private BitmapSource image = imageList[LogImageType.Custom];
         /// <summary>
         /// Gets or sets the image.
         /// </summary>
         /// <value>The image.</value>
-        public BitmapSource Image
-        {
-            get { return image; }
-            set { image = value; }
-        }
+        public BitmapSource Image { get; set; } = ImageList[LogImageType.Custom];
 
-        private string level = string.Empty;
         /// <summary>
         /// Gets or sets the level.
         /// </summary>
         /// <value>The level.</value>
-        public string Level
-        {
-            get { return level; }
-            set { level = value; }
-        }
+        public string Level { get; set; } = string.Empty;
 
-        private string thread = string.Empty;
         /// <summary>
         /// Gets or sets the thread.
         /// </summary>
         /// <value>The thread.</value>
-        public string Thread
-        {
-            get { return thread; }
-            set { thread = value; }
-        }
+        public string Thread { get; set; } = string.Empty;
 
-        private string message = string.Empty;
         /// <summary>
         /// Gets or sets the message.
         /// </summary>
         /// <value>The message.</value>
-        public string Message
-        {
-            get { return message; }
-            set { message = value; }
-        }
+        public string Message { get; set; } = string.Empty;
 
-        private string machineName = string.Empty;
         /// <summary>
         /// Gets or sets the name of the machine.
         /// </summary>
         /// <value>The name of the machine.</value>
-        public string MachineName
-        {
-            get { return machineName; }
-            set { machineName = value; }
-        }
+        public string MachineName { get; set; } = string.Empty;
 
-        private string userName = string.Empty;
         /// <summary>
         /// Gets or sets the name of the user.
         /// </summary>
         /// <value>The name of the user.</value>
-        public string UserName
-        {
-            get { return userName; }
-            set { userName = value; }
-        }
+        public string UserName { get; set; } = string.Empty;
 
-        private string identity = string.Empty;
         /// <summary>
         /// Gets or sets the name of the identity.
         /// </summary>
         /// <value>The name of the identity.</value>
-        public string Identity
-        {
-            get { return identity; }
-            set { identity = value; }
-        }
+        public string Identity { get; set; } = String.Empty;
 
-        private string ndc = string.Empty;
         /// <summary>
         /// Gets or sets the NDC.
         /// </summary>
         /// <value>The NDC.</value>
-        public string NDC
-        {
-            get { return ndc; }
-            set { ndc = value; }
-        }
+        public string Ndc { get; set; } = string.Empty;
 
-        private string hostName = string.Empty;
         /// <summary>
         /// Gets or sets the name of the host.
         /// </summary>
         /// <value>The name of the host.</value>
-        public string HostName
-        {
-            get { return hostName; }
-            set { hostName = value; }
-        }
+        public string HostName { get; set; } = string.Empty;
 
-        private string app = string.Empty;
         /// <summary>
         /// Gets or sets the application.
         /// </summary>
         /// <value>The application.</value>
-        public string App
-        {
-            get { return app; }
-            set { app = value; }
-        }
+        public string App { get; set; } = string.Empty;
 
-        private string throwable = string.Empty;
+
         /// <summary>
         /// Gets or sets the throwable.
         /// </summary>
         /// <value>The throwable.</value>
-        public string Throwable
-        {
-            get { return throwable; }
-            set { throwable = value; }
-        }
+        public string Throwable { get; set; } = string.Empty;
 
-        private string @class = string.Empty;
         /// <summary>
         /// Gets or sets the class.
         /// </summary>
         /// <value>The class.</value>
-        public string Class
-        {
-            get { return @class; }
-            set { @class = value; }
-        }
+        public string Class { get; set; } = string.Empty;
 
-        private string method = string.Empty;
         /// <summary>
         /// Gets or sets the method.
         /// </summary>
         /// <value>The method.</value>
-        public string Method
-        {
-            get { return method; }
-            set { method = value; }
-        }
+        public string Method { get; set; } = string.Empty;
 
-        private string file = string.Empty;
         /// <summary>
         /// Gets or sets the file.
         /// </summary>
         /// <value>The file.</value>
-        public string File
-        {
-            get { return file; }
-            set { file = value; }
-        }
+        public string File { get; set; } = string.Empty;
 
-        private string line = string.Empty;
         /// <summary>
         /// Gets or sets the line.
         /// </summary>
         /// <value>The line.</value>
-        public string Line
-        {
-            get { return line; }
-            set { line = value; }
-        }
+        public string Line { get; set; } = string.Empty;
 
-        private string logFile = string.Empty;
 
+        private string _logfile = string.Empty;
         /// <summary>
         /// Gets or sets the log file name (used in merge mode).
         /// </summary>
         /// <value>The log file.</value>
         public string LogFile
         {
-            get { return justFileName ? Path.GetFileName(logFile) : logFile; }
-            set { logFile = value; }
+            get => JustFileName ? Path.GetFileName(_logfile) : _logfile;
+            set => _logfile = value;
         }
 
         /// <summary>
         /// Gets the full log path.
         /// </summary>
         /// <value>The full log path.</value>
-        public string FullLogPath
-        { get { return LogFile; } }
+        public string FullLogPath => LogFile;
 
         /// <summary>
         /// Gets the short log file.
         /// </summary>
         /// <value>The short log file.</value>
-        public string ShortLogFile
-        { get { return Path.GetFileName(LogFile); } }
-
-        private static bool justFileName;
+        public string ShortLogFile => Path.GetFileName(LogFile);
 
         /// <summary>
         /// Gets or sets a value indicating whether <see cref="LogFile"/> property is returning the full path of just the file name.
         /// </summary>
         /// <value><c>true</c> if [just file name]; otherwise, <c>false</c>.</value>
-        public static bool JustFileName
-        {
-            get { return justFileName; }
-            set { justFileName = value; }
-        }
-        private string logger;
+        public static bool JustFileName { get; set; } = true;
+
+
+        private string _logger;
 
         /// <summary>
         /// Gets or sets a value indicating the logger used
@@ -318,8 +234,8 @@ namespace LogViewer
         /// <value>The logger.</value>
         public string Logger
         {
-			get { return logger; }
-			set { logger = value; }
+			get => _logger;
+            set => _logger = value;
         }
 
     }
