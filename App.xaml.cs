@@ -73,14 +73,24 @@ namespace LogViewer
 		protected override void OnStartup(StartupEventArgs e)
 		{
 			base.OnStartup(e);
+
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
+
 			Log.DebugFormat("Arguments passed to the application: {0}", string.Join(", ", e.Args));
 			_filesToLoad = e.Args;
 		}
 
-		protected override void OnActivated(System.EventArgs e)
+        private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            Log.Error("Unhandled Exception",e.Exception);
+            MessageBox.Show("Unhandled Exception occured and hasd been logged. App will shutdown sorry.",
+                "Fatal error");
+        }
+
+        protected override void OnActivated(System.EventArgs e)
 		{
 			base.OnActivated(e);
-			var window = (MainWindow as Window1);
+			var window = (MainWindow as MainWindow);
 			if (window == null)
 				return;
 			var files = _filesToLoad.Where(File.Exists).Select(f => new FileInfo(f)).ToList();

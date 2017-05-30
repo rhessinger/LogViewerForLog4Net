@@ -1,5 +1,8 @@
 YourLog4NetViewer - History
 ---------------------------
+ V 3.0.0 May-2017 OD
+ RH moved the project from Codeplex to Github then I Cloned the original to create V 3.0.0 tha will be shaped to become a Windows Store App
+
  V 2.7.5 July-2015 RH (includes OD's notes)
   * Modifyed topbar layout : when a lot of files where opened, file names were overwritting the filter symbol.
   * Changed the order of message priority filter, current order has no meaning. Now, first is Error, second is Warning, etc. A more logical order.

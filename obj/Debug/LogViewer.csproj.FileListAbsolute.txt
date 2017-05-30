@@ -33,14 +33,15 @@ D:\EnCours\LogViewerForLog4Net\obj\Debug\FilterActivity.baml
 D:\EnCours\LogViewerForLog4Net\obj\Debug\About.g.cs
 D:\EnCours\LogViewerForLog4Net\obj\Debug\Filter.g.cs
 D:\EnCours\LogViewerForLog4Net\obj\Debug\FilterActivity.g.cs
-D:\EnCours\LogViewerForLog4Net\obj\Debug\Window1.g.cs
 D:\EnCours\LogViewerForLog4Net\obj\Debug\App.g.cs
 D:\EnCours\LogViewerForLog4Net\obj\Debug\GeneratedInternalTypeHelper.g.cs
 D:\EnCours\LogViewerForLog4Net\obj\Debug\LogViewer_MarkupCompile.cache
 D:\EnCours\LogViewerForLog4Net\obj\Debug\LogViewer_MarkupCompile.lref
-D:\EnCours\LogViewerForLog4Net\obj\Debug\Window1.baml
 D:\EnCours\LogViewerForLog4Net\obj\Debug\LogViewer.g.resources
 D:\EnCours\LogViewerForLog4Net\obj\Debug\LogViewer.Properties.Resources.resources
 D:\EnCours\LogViewerForLog4Net\obj\Debug\LogViewer.csproj.GenerateResource.Cache
 D:\EnCours\LogViewerForLog4Net\obj\Debug\LogViewer.exe
 D:\EnCours\LogViewerForLog4Net\obj\Debug\LogViewer.pdb
+D:\EnCours\LogViewerForLog4Net\obj\Debug\LogViewer.csprojResolveAssemblyReference.cache
+D:\EnCours\LogViewerForLog4Net\obj\Debug\MainWindow.g.cs
+D:\EnCours\LogViewerForLog4Net\obj\Debug\MainWindow.baml
