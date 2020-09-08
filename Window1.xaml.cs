@@ -169,7 +169,7 @@ namespace LogViewer
             imageWarn.Source = Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Warning.Handle, Int32Rect.Empty, null);
             log.Info("Initializing Debug Bitmap");
             imageDebug.Source = Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Question.Handle, Int32Rect.Empty, null);
-			Title = string.Format(Properties.Resources.WindowTitle + (!string.IsNullOrWhiteSpace(FileName) ? " - " + FileName : string.Empty), Assembly.GetExecutingAssembly().GetName().Version);
+            Title = string.Format(Properties.Resources.WindowTitle + (!string.IsNullOrWhiteSpace(FileName) ? " - " + FileName : string.Empty), Assembly.GetExecutingAssembly().GetName().Version);
             log.Info("Setting the title as " + Title);
             log.Info("Applying ExpressionDark Theme");
             this.ApplyTheme("ExpressionDark");
@@ -179,7 +179,7 @@ namespace LogViewer
                 gvc.Width = gvc.ActualWidth;
                 gvc.Width = Double.NaN;
             }
-			mergedFiles.ForEach(mergedFile => RecentFileList.InsertFile(mergedFile));
+            mergedFiles.ForEach(mergedFile => RecentFileList.InsertFile(mergedFile));
         }
 
         /// <summary>
@@ -247,7 +247,7 @@ namespace LogViewer
                 mergedFiles.Add(logFileName);
             }
 
-			log.Info("Clearing the log filter");
+            log.Info("Clearing the log filter");
             logFilter.Clear();
             log.Info("Turning off the IsFiltered property of the FilterIndicator");
             FilterIndicator.IsFiltered = false;
@@ -282,9 +282,9 @@ namespace LogViewer
                         continue;
                     var logentry = new LogEntry { Item = iIndex };
 
-// ReSharper disable StringLiteralsWordIsNotInDictionary
+                    // ReSharper disable StringLiteralsWordIsNotInDictionary
                     var dSeconds = Convert.ToDouble(oXmlTextReader.GetAttribute("timestamp"));
-// ReSharper restore StringLiteralsWordIsNotInDictionary
+                    // ReSharper restore StringLiteralsWordIsNotInDictionary
                     logentry.TimeStamp = dt.AddMilliseconds(dSeconds).ToLocalTime();
                     logentry.Thread = oXmlTextReader.GetAttribute("thread");
                     logentry.Logger = oXmlTextReader.GetAttribute("logger");
@@ -384,9 +384,9 @@ namespace LogViewer
                                             }
                                             break;
                                         }
-// ReSharper disable StringLiteralsWordIsNotInDictionary
+                                    // ReSharper disable StringLiteralsWordIsNotInDictionary
                                     case ("log4j:throwable"):
-// ReSharper restore StringLiteralsWordIsNotInDictionary
+                                        // ReSharper restore StringLiteralsWordIsNotInDictionary
                                         {
                                             logentry.Throwable = oXmlTextReader.ReadString();
                                             break;
@@ -516,9 +516,9 @@ namespace LogViewer
 
             if (!withMerge)
             {
-				textboxFileName.Text = logFileName;
-				Title = string.Format(Properties.Resources.WindowTitle + " - " + logFileName, Assembly.GetExecutingAssembly().GetName().Version);
-				log.Info("Setting the title as " + Title);
+                textboxFileName.Text = logFileName;
+                Title = string.Format(Properties.Resources.WindowTitle + " - " + logFileName, Assembly.GetExecutingAssembly().GetName().Version);
+                log.Info("Setting the title as " + Title);
                 return;
             }
 
@@ -530,8 +530,8 @@ namespace LogViewer
             }
 
             textboxFileName.Text = s;
-			Title = string.Format(Properties.Resources.WindowTitle + " - " + s, Assembly.GetExecutingAssembly().GetName().Version);
-			log.Info("Setting the title as " + Title);
+            Title = string.Format(Properties.Resources.WindowTitle + " - " + s, Assembly.GetExecutingAssembly().GetName().Version);
+            log.Info("Setting the title as " + Title);
         }
 
         #region ListView Events
@@ -550,9 +550,9 @@ namespace LogViewer
 
                 image1.Source = logentry.Image;
                 textBoxLevel.Text = logentry.Level;
-	            textBoxTimeStamp.Text =
-		            logentry.TimeStamp.ToString(Properties.Resources.DisplayDayFormat + " " + CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern + " " +
-												Properties.Resources.DisplayTimeFormat);
+                textBoxTimeStamp.Text =
+                    logentry.TimeStamp.ToString(Properties.Resources.DisplayDayFormat + " " + CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern + " " +
+                                                Properties.Resources.DisplayTimeFormat);
                 textBoxMachineName.Text = logentry.MachineName;
                 textBoxThread.Text = logentry.Thread;
                 textBoxItem.Text = logentry.Item.ToString();
@@ -689,12 +689,12 @@ namespace LogViewer
         {
             log.Info("Initializing the open file dialog object");
             var oOpenFileDialog = new System.Windows.Forms.OpenFileDialog
-                                      {
-                                          Filter = Properties.Resources.XmlOpenFilter,
-                                          DefaultExt = "xml",
-                                          Multiselect = true,
-                                          Title = Properties.Resources.OpenDialogTitle
-                                      };
+            {
+                Filter = Properties.Resources.XmlOpenFilter,
+                DefaultExt = "xml",
+                Multiselect = true,
+                Title = Properties.Resources.OpenDialogTitle
+            };
             if (oOpenFileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
             FileName = oOpenFileDialog.FileName;
             log.Info("FileName is " + FileName);
@@ -712,12 +712,12 @@ namespace LogViewer
         {
             log.Info("Initializing the open file dialog for filer merge click event");
             var oOpenFileDialog = new System.Windows.Forms.OpenFileDialog
-                                      {
-                                          Filter = Properties.Resources.XmlOpenFilter,
-                                          DefaultExt = "xml",
-                                          Multiselect = true,
-                                          Title = Properties.Resources.MergeOpenDialog
-                                      };
+            {
+                Filter = Properties.Resources.XmlOpenFilter,
+                DefaultExt = "xml",
+                Multiselect = true,
+                Title = Properties.Resources.MergeOpenDialog
+            };
             if (oOpenFileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
             foreach (var t in oOpenFileDialog.FileNames)
             {
@@ -776,7 +776,7 @@ namespace LogViewer
             var tempFilter = logFilter.Clone();
             var filter = new Filter(Entries, tempFilter) { Owner = this };
             log.Info("Showing the filter dialog");
-            
+
             filter.ShowDialog();
 
             if (filter.DialogResult != true)
@@ -818,12 +818,15 @@ namespace LogViewer
             if (!string.IsNullOrEmpty(logFilter.Logger))
                 query = query.Where(e => e.Logger.ToUpperInvariant().Contains(logFilter.Logger.ToUpperInvariant()));
 
+            query = query.Where(e => e.TimeStamp >= logFilter.TimeStampFrom);
+            query = query.Where(e => e.TimeStamp <= logFilter.TimeStampTo);
+
             // TODO: shouldn't we be showing 0 results if the filter matched 0 results?
             var c = query.Count();
             log.Info("Received queries " + query.Count());
 
             FilterIndicator.IsFiltered = query.Any() && (c != Entries.Count());
-            
+
             logFilter.IsFiltered = FilterIndicator.IsFiltered;
             log.Info("Log Filter status " + logFilter.IsFiltered);
 
@@ -1006,7 +1009,7 @@ namespace LogViewer
         /// Occurs when a property value changes.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
-		public void notifyPropertyChanged(string property)
+        public void notifyPropertyChanged(string property)
         {
             if (property == "Entries") notifyPropertyChanged("CanMerge");
             if (PropertyChanged == null) return;

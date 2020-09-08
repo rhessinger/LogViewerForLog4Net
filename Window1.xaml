@@ -258,7 +258,7 @@
 					<ListView.View>
 						<GridView x:Name="GridView1">
 							<GridViewColumn Header="Item" DisplayMemberBinding="{Binding Item}"  />
-							<GridViewColumn Header="TimeStamp" DisplayMemberBinding="{Binding TimeStamp, ConverterCulture=fr-FR, StringFormat=HH:mm:ss.fff}"/>
+                            <GridViewColumn Header="TimeStamp" DisplayMemberBinding="{Binding TimeStamp, ConverterCulture=fr-FR, StringFormat=yyyy-MM-dd HH:mm:ss.fff}"/>
 							<GridViewColumn Header="">
 								<GridViewColumn.CellTemplate>
 									<DataTemplate>
