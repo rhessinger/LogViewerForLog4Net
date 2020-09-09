@@ -71,6 +71,7 @@ namespace LogViewer
     public partial class Filter
     {
         private readonly LogFilter logFilter;
+        private readonly DateTime _minTimestamp;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Filter"/> class.
@@ -83,6 +84,9 @@ namespace LogViewer
             InitializeComponent();
             populateDropDown(entries);
             this.logFilter = logFilter;
+            _minTimestamp = entries.Min(x => x.TimeStamp);
+            if (logFilter.TimeStampFrom == DateTime.MinValue)
+                logFilter.TimeStampFrom = _minTimestamp;
             MainGrid.DataContext = this.logFilter;
 
             try { this.ApplyTheme("ExpressionDark"); }
@@ -113,6 +117,9 @@ namespace LogViewer
 
             this.textBoxMessage.Text = string.Empty;
             this.textBoxThrowable.Text = string.Empty;
+            
+            textBoxTimestampFrom.Text = _minTimestamp.ToString();
+            textBoxTimestampTo.Text = DateTime.Now.ToString();
 
             this.comboBoxNDC.Text = string.Empty;
             comboBoxIdentity.Text = string.Empty;

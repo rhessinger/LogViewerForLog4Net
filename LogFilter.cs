@@ -70,7 +70,9 @@ namespace LogViewer
         /// Gets or sets the time stamp.
         /// </summary>
         /// <value>The time stamp.</value>
-        public DateTime TimeStamp { get; set; }
+        public DateTime TimeStampFrom { get; set; }
+
+        public DateTime TimeStampTo { get; set; }
         /// <summary>
         /// Gets or sets the level.
         /// </summary>
@@ -175,7 +177,8 @@ namespace LogViewer
         /// </summary>
         public void Clear()
         {
-            TimeStamp = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            TimeStampFrom = DateTime.MinValue;
+            TimeStampTo = DateTime.Now;
             File = string.Empty;
             Method = string.Empty;
             Class = string.Empty;
