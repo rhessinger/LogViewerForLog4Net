@@ -26,6 +26,7 @@ Any contribution to this project will be appreciate. There are many things that 
 To build the project you'll need to reference WPF.Themes DLL.  It is included in the Libs directory.  It is modified from a CodePlex project : [http://wpfthemes.codeplex.com/] that is no longer maintained.  This will most likely be replaced or fully integrated in the near future.
 
 Some new features coming down the pipeline will be:
+- [ ] Migrate to .Net Standard/.Net Core/.Net 5
+- [ ] Log file support generated from other logging libraries
 - [ ] Improved file parsing
 - [ ] Database support
-- [ ] Log file support generated from other logging libraries
